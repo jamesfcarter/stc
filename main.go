@@ -8,20 +8,24 @@ import (
 	"os"
 )
 
-var Db *sql.DB
+type Stc struct {
+	Db *sql.DB
+}
 
 func main() {
-	var err error
+	stc := &Stc{}
+
 	dbSpec := os.Getenv("STC_DB")
 	if dbSpec == "" {
 		log.Fatal("STC_DB not set")
 	}
-	Db, err = sql.Open("mysql", dbSpec)
+	var err error
+	stc.Db, err = sql.Open("mysql", dbSpec)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer Db.Close()
-	err = Db.Ping()
+	defer stc.Db.Close()
+	err = stc.Db.Ping()
 	if err != nil {
 		log.Fatal("can't communicate with db: %v", err)
 	}
@@ -37,6 +41,6 @@ func main() {
 	http.Handle("/snapshots/", fs)
 	http.Handle("/unprocessed/", fs)
 
-	http.HandleFunc("/feature.html", FeatureHandler)
+	http.HandleFunc("/feature.html", stc.FeatureHandler)
 	http.ListenAndServe(":8080", nil)
 }
