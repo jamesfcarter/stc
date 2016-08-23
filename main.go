@@ -9,7 +9,8 @@ import (
 )
 
 type Stc struct {
-	Db *sql.DB
+	Db       *sql.DB
+	Template *Templates
 }
 
 func main() {
@@ -27,7 +28,7 @@ func main() {
 	defer stc.Db.Close()
 	err = stc.Db.Ping()
 	if err != nil {
-		log.Fatal("can't communicate with db: %v", err)
+		log.Fatalf("can't communicate with db: %v", err)
 	}
 
 	fsRoot := os.Getenv("STC_ROOT")
@@ -36,11 +37,26 @@ func main() {
 	}
 	fs := http.FileServer(http.Dir(fsRoot))
 
+	stc.Template, err = MakeTemplates()
+	if err != nil {
+		log.Fatalf("could not make templates: %v", err)
+	}
+
 	http.Handle("/movies/", fs)
 	http.Handle("/computers/", fs)
 	http.Handle("/snapshots/", fs)
 	http.Handle("/unprocessed/", fs)
+	http.Handle("/img/", fs)
+	http.Handle("/favicon.ico", fs)
 
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
+	http.HandleFunc("/stylesheet.css", func(w http.ResponseWriter, r *http.Request) {
+		err = stc.Template.Exec("stylesheet", w, nil)
+		if err != nil {
+			log.Printf("%v", err)
+			http.Error(w, "bad stylesheet", 500)
+			return
+		}
+	})
 	http.ListenAndServe(":8080", nil)
 }

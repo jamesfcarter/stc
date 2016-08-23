@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 )
 
 type Feature struct {
+	Stc         *Stc
 	Id          int
 	Title       string
 	IsTvEpisode bool
@@ -26,7 +28,18 @@ func (stc *Stc) LoadFeature(id int) (*Feature, error) {
 		return nil, err
 	}
 	f.Id = id
+	f.Stc = stc
 	return f, nil
+}
+
+func (f *Feature) TemplateData() FeatureTemplateData {
+	return FeatureTemplateData{
+		Title:       f.Title,
+		Image:       fmt.Sprintf("%d.jpg", f.Id),
+		Name:        f.Title,
+		ImdbLink:    f.ImdbLink,
+		Description: f.Description,
+	}
 }
 
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,5 +54,10 @@ func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad feature id", 400)
 		return
 	}
-	log.Printf("%v", f)
+	err = stc.Template.Exec("feature", w, f.TemplateData())
+	if err != nil {
+		log.Printf("%v", err)
+		http.Error(w, "bad feature", 500)
+		return
+	}
 }
