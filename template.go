@@ -301,12 +301,23 @@ a.button:hover {
     `
 )
 
+type ComputerTemplateData struct {
+	Id          int
+	Name        string
+	InfoLink    string
+	Description string
+	Image       string
+	Features    []FeatureTemplateData
+}
+
 type FeatureTemplateData struct {
+	Id          int
 	Title       string
 	Image       string
 	Name        string
 	ImdbLink    string
 	Description string
+	Computers   []ComputerTemplateData
 }
 
 type Templates map[string]*template.Template

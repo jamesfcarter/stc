@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Computer struct {
 	Stc          *Stc
 	Id           int
@@ -23,4 +25,14 @@ func (stc *Stc) LoadComputer(id int) (*Computer, error) {
 	c.Id = id
 	c.Stc = stc
 	return c, nil
+}
+
+func (c *Computer) TemplateData() ComputerTemplateData {
+	return ComputerTemplateData{
+		Id:          c.Id,
+		Image:       c.Image,
+		Name:        fmt.Sprintf("%s %s", c.Manufacturer, c.Model),
+		InfoLink:    c.InfoLink,
+		Description: c.Description,
+	}
 }

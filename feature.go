@@ -33,12 +33,19 @@ func (stc *Stc) LoadFeature(id int) (*Feature, error) {
 }
 
 func (f *Feature) TemplateData() FeatureTemplateData {
+	computers, _ := f.Stc.ComputersinFeature(f.Id)
+	cinfo := make([]ComputerTemplateData, len(computers))
+	for i, v := range computers {
+		cinfo[i] = v.TemplateData()
+	}
 	return FeatureTemplateData{
+		Id:          f.Id,
 		Title:       f.Title,
 		Image:       fmt.Sprintf("%d.jpg", f.Id),
 		Name:        f.Title,
 		ImdbLink:    f.ImdbLink,
 		Description: f.Description,
+		Computers:   cinfo,
 	}
 }
 
