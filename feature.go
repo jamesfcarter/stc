@@ -32,17 +32,13 @@ func (stc *Stc) LoadFeature(id int) (*Feature, error) {
 	return f, nil
 }
 
-func (f *Feature) TemplateData(deep bool) FeatureTemplateData {
-	var cinfo []ComputerTemplateData
+func (f *Feature) TemplateData(deep, hidden bool) FeatureTemplateData {
+	var appearances []Appearance
+	var err error
 	if deep {
-		computers, err := f.Stc.ComputersinFeature(f.Id)
+		appearances, err = f.Stc.FeatureAppearances(f, hidden)
 		if err != nil {
-			log.Printf("%v", err)
-		} else {
-			cinfo = make([]ComputerTemplateData, len(computers))
-			for i, v := range computers {
-				cinfo[i] = v.TemplateData(false)
-			}
+		    log.Printf("%v", err)
 		}
 	}
 	return FeatureTemplateData{
@@ -52,8 +48,16 @@ func (f *Feature) TemplateData(deep bool) FeatureTemplateData {
 		Name:        f.Title,
 		ImdbLink:    f.ImdbLink,
 		Description: f.Description,
-		Computers:   cinfo,
+		Appearances: appearances,
 	}
+}
+
+func (f *Feature) Identity() int {
+	return f.Id
+}
+
+func (f *Feature) Name() string {
+	return f.Title
 }
 
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +72,8 @@ func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad feature id", 400)
 		return
 	}
-	err = stc.Template.Exec("feature", w, f.TemplateData(true))
+log.Printf("%v", f.TemplateData(true, false))
+	err = stc.Template.Exec("feature", w, f.TemplateData(true, false))
 	if err != nil {
 		log.Printf("%v", err)
 		http.Error(w, "bad feature", 500)

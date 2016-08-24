@@ -285,8 +285,8 @@ a.button:hover {
 {{define "miniindex"}}
     <p class='links'>
     {{range .}}
-      <a href='#{{.Id}}'>
-        &bull;{{.Name}}
+      <a href='#{{.Subject.Identity}}'>
+        &bull;{{.Subject.Name}}
       </a>
     {{end}}
     </p>
@@ -305,7 +305,13 @@ a.button:hover {
         <img alt='[More Information]' src='/img/info.png'>
       </a>
     </p>
-    {{template "miniindex" .Computers}}
+    {{template "miniindex" .Appearances}}
+    <section class='appearances'>
+    {{range .Appearances}}
+      <article class='appearance' id='{{.Subject.Identity}}'>
+      </article>
+    {{end}}
+    </section>
   </section>
 {{end}}
     `
@@ -317,7 +323,7 @@ type ComputerTemplateData struct {
 	InfoLink    string
 	Description string
 	Image       string
-	Features    []FeatureTemplateData
+	Appearances []Appearance
 }
 
 type FeatureTemplateData struct {
@@ -327,7 +333,7 @@ type FeatureTemplateData struct {
 	Name        string
 	ImdbLink    string
 	Description string
-	Computers   []ComputerTemplateData
+	Appearances []Appearance
 }
 
 type Templates map[string]*template.Template
