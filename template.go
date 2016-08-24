@@ -282,6 +282,15 @@ a.button:hover {
     </address>
   </footer>
 </body>
+{{define "miniindex"}}
+    <p class='links'>
+    {{range .}}
+      <a href='#{{.Id}}'>
+        &bull;{{.Name}}
+      </a>
+    {{end}}
+    </p>
+{{end}}
     `
 	featureTemplate = `
 {{define "content"}}
@@ -296,6 +305,7 @@ a.button:hover {
         <img alt='[More Information]' src='/img/info.png'>
       </a>
     </p>
+    {{template "miniindex" .Computers}}
   </section>
 {{end}}
     `

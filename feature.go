@@ -35,10 +35,14 @@ func (stc *Stc) LoadFeature(id int) (*Feature, error) {
 func (f *Feature) TemplateData(deep bool) FeatureTemplateData {
 	var cinfo []ComputerTemplateData
 	if deep {
-		computers, _ := f.Stc.ComputersinFeature(f.Id)
-		cinfo = make([]ComputerTemplateData, len(computers))
-		for i, v := range computers {
-			cinfo[i] = v.TemplateData(false)
+		computers, err := f.Stc.ComputersinFeature(f.Id)
+		if err != nil {
+			log.Printf("%v", err)
+		} else {
+			cinfo = make([]ComputerTemplateData, len(computers))
+			for i, v := range computers {
+				cinfo[i] = v.TemplateData(false)
+			}
 		}
 	}
 	return FeatureTemplateData{
