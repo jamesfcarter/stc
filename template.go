@@ -309,6 +309,29 @@ a.button:hover {
     <section class='appearances'>
     {{range .Appearances}}
       <article class='appearance' id='{{.Subject.Identity}}'>
+	<hr>
+	<p class='image'>
+          <img alt='' src='/computers/{{.Computer.Image}}'>
+        </p>
+        <h3>
+          <a href='/computer.html?c=/{{.Computer.Id}}'>{{.Computer.Name}}</a>
+        </h3>
+        <p>{{.Description}}</p>
+        <p class='comment'>
+          <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
+            Add a comment.
+          </a>
+	  <p class='stars'>
+	  STARS GO HERE
+	  </p>
+	  <div class='film'>
+          <div>
+	  {{range .Images}}
+            <img alt='' src='/snapshots/{{.}}'>
+	  {{end}}
+          </div>
+        </div>
+        </p>
       </article>
     {{end}}
     </section>

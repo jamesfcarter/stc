@@ -72,7 +72,6 @@ func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad feature id", 400)
 		return
 	}
-log.Printf("%v", f.TemplateData(true, false))
 	err = stc.Template.Exec("feature", w, f.TemplateData(true, false))
 	if err != nil {
 		log.Printf("%v", err)
