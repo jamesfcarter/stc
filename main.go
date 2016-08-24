@@ -16,7 +16,7 @@ type Stc struct {
 func main() {
 	stc := &Stc{}
 
-	// user:pass@tcp(host:3306)/datsbase
+	// user:pass@tcp(host:3306)/database
 	dbSpec := os.Getenv("STC_DB")
 	if dbSpec == "" {
 		log.Fatal("STC_DB not set")

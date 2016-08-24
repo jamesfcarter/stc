@@ -27,12 +27,21 @@ func (stc *Stc) LoadComputer(id int) (*Computer, error) {
 	return c, nil
 }
 
-func (c *Computer) TemplateData() ComputerTemplateData {
+func (c *Computer) TemplateData(deep bool) ComputerTemplateData {
+	var finfo []FeatureTemplateData
+	if deep {
+		features, _ := c.Stc.FeaturesForComputer(c.Id)
+		finfo = make([]FeatureTemplateData, len(features))
+		for i, v := range features {
+			finfo[i] = v.TemplateData(false)
+		}
+	}
 	return ComputerTemplateData{
 		Id:          c.Id,
 		Image:       c.Image,
 		Name:        fmt.Sprintf("%s %s", c.Manufacturer, c.Model),
 		InfoLink:    c.InfoLink,
 		Description: c.Description,
+		Features:    finfo,
 	}
 }

@@ -27,3 +27,31 @@ func (stc *Stc) ComputersinFeature(id int) ([]*Computer, error) {
 
 	return result, nil
 }
+
+func (stc *Stc) FeaturesForComputer(id int) ([]*Feature, error) {
+	result := []*Feature{}
+
+	rows, err := stc.Db.Query("SELECT "+
+		"feature from appearance WHERE computer=?", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var featid int
+		err = rows.Scan(&featid)
+		if err != nil {
+			return nil, err
+		}
+
+		f, err := stc.LoadFeature(featid)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, f)
+	}
+
+	return result, nil
+}

@@ -32,11 +32,14 @@ func (stc *Stc) LoadFeature(id int) (*Feature, error) {
 	return f, nil
 }
 
-func (f *Feature) TemplateData() FeatureTemplateData {
-	computers, _ := f.Stc.ComputersinFeature(f.Id)
-	cinfo := make([]ComputerTemplateData, len(computers))
-	for i, v := range computers {
-		cinfo[i] = v.TemplateData()
+func (f *Feature) TemplateData(deep bool) FeatureTemplateData {
+	var cinfo []ComputerTemplateData
+	if deep {
+		computers, _ := f.Stc.ComputersinFeature(f.Id)
+		cinfo = make([]ComputerTemplateData, len(computers))
+		for i, v := range computers {
+			cinfo[i] = v.TemplateData(false)
+		}
 	}
 	return FeatureTemplateData{
 		Id:          f.Id,
@@ -61,7 +64,7 @@ func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad feature id", 400)
 		return
 	}
-	err = stc.Template.Exec("feature", w, f.TemplateData())
+	err = stc.Template.Exec("feature", w, f.TemplateData(true))
 	if err != nil {
 		log.Printf("%v", err)
 		http.Error(w, "bad feature", 500)
