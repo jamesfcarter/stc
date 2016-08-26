@@ -1,11 +1,48 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
+
+type Tv struct {
+	Season  sql.NullInt64
+	Episode sql.NullInt64
+	Title   sql.NullString
+}
+
+func (stc *Stc) LoadTv(id int) (*Tv, error) {
+	t := &Tv{}
+
+	err := stc.Db.QueryRow("SELECT "+
+		"season, episode, title"+
+		" FROM tv WHERE feature=?", id).Scan(&t.Season, &t.Episode, &t.Title)
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
+func (t *Tv) FullName() string {
+	parts := []string{}
+	if t.Season.Valid {
+		parts = append(parts,
+			fmt.Sprintf("Season %d", t.Season.Int64))
+	}
+	if t.Episode.Valid {
+		parts = append(parts,
+			fmt.Sprintf("Episode %d", t.Episode.Int64))
+	}
+	if t.Title.Valid {
+		parts = append(parts,
+			"\""+ReadableTitle(t.Title.String)+"\"")
+	}
+	return strings.Join(parts, ", ")
+}
 
 type Feature struct {
 	Stc         *Stc
@@ -57,7 +94,16 @@ func (f *Feature) Image() string {
 }
 
 func (f *Feature) Name() string {
-	return ReadableTitle(f.Title)
+	name := ReadableTitle(f.Title)
+	if f.IsTvEpisode {
+		tv, err := f.Stc.LoadTv(f.Id)
+		if err != nil {
+			log.Print(err)
+		} else {
+			name += " - " + tv.FullName()
+		}
+	}
+	return name
 }
 
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
