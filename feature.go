@@ -38,7 +38,7 @@ func (f *Feature) TemplateData(deep, hidden bool) FeatureTemplateData {
 	if deep {
 		appearances, err = f.Stc.FeatureAppearances(f, hidden)
 		if err != nil {
-		    log.Printf("%v", err)
+			log.Printf("%v", err)
 		}
 	}
 	return FeatureTemplateData{

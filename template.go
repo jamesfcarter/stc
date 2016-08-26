@@ -291,6 +291,24 @@ a.button:hover {
     {{end}}
     </p>
 {{end}}
+{{define "star"}}
+  <img alt='{{.LabelAlt}}' src='/img/{{.LabelImage}}'>
+  <img alt='{{.StarsAlt}}' src='/img/{{.StarsImage}}'>
+  {{if .Text}}
+    <br>
+    {{.Text}}
+    <br>
+  {{end}}
+{{end}}
+{{define "stars"}}
+        <p class='stars'>
+	  {{template "star" .ImportanceInfo}}
+	  <br>
+	  {{template "star" .RealismInfo}}
+	  <br>
+	  {{template "star" .VisibilityInfo}}
+        </p>
+{{end}}
     `
 	featureTemplate = `
 {{define "content"}}
@@ -321,9 +339,7 @@ a.button:hover {
           <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
             Add a comment.
           </a>
-	  <p class='stars'>
-	  STARS GO HERE
-	  </p>
+	  {{template "stars" .}}
 	  <div class='film'>
           <div>
 	  {{range .Images}}

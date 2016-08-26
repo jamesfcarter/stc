@@ -1,6 +1,7 @@
 package main
 
 import "database/sql"
+import "strings"
 
 type Identifier interface {
 	Identity() int
@@ -19,6 +20,51 @@ type Appearance struct {
 	VisibilityStars int
 	Visibility      sql.NullString
 	Images          []string
+}
+
+type StarsInfo struct {
+	LabelAlt   string
+	LabelImage string
+	StarsAlt   string
+	StarsImage string
+	Text       string
+}
+
+func MakeStarsInfo(label string, stars int, txt sql.NullString) StarsInfo {
+	var si StarsInfo
+	si.Text = txt.String
+	si.LabelAlt = label + ":"
+	si.LabelImage = strings.ToLower(label) + ".png"
+	switch {
+	case stars == 1:
+		si.StarsAlt = "*"
+		si.StarsImage = "1star.png"
+	case stars == 2:
+		si.StarsAlt = "**"
+		si.StarsImage = "2stars.png"
+	case stars == 3:
+		si.StarsAlt = "***"
+		si.StarsImage = "3stars.png"
+	case stars == 4:
+		si.StarsAlt = "****"
+		si.StarsImage = "4stars.png"
+	case stars == 5:
+		si.StarsAlt = "*****"
+		si.StarsImage = "5stars.png"
+	}
+	return si
+}
+
+func (a Appearance) RealismInfo() StarsInfo {
+	return MakeStarsInfo("Realism", a.RealismStars, a.Realism)
+}
+
+func (a Appearance) ImportanceInfo() StarsInfo {
+	return MakeStarsInfo("Importance", a.ImportanceStars, a.Importance)
+}
+
+func (a Appearance) VisibilityInfo() StarsInfo {
+	return MakeStarsInfo("Visibility", a.VisibilityStars, a.Visibility)
 }
 
 func (stc *Stc) AppearanceImages(computer, feature int) []string {
