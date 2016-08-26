@@ -42,12 +42,8 @@ func (f *Feature) TemplateData(deep, hidden bool) FeatureTemplateData {
 		}
 	}
 	return FeatureTemplateData{
-		Id:          f.Id,
-		Title:       f.Title,
-		Image:       fmt.Sprintf("%d.jpg", f.Id),
-		Name:        f.Title,
-		ImdbLink:    f.ImdbLink,
-		Description: f.Description,
+		PageTitle:   PageTitle(ReadableTitle(f.Title)),
+		Feature:     f,
 		Appearances: appearances,
 	}
 }
@@ -56,8 +52,12 @@ func (f *Feature) Identity() int {
 	return f.Id
 }
 
+func (f *Feature) Image() string {
+	return fmt.Sprintf("%d.jpg", f.Id)
+}
+
 func (f *Feature) Name() string {
-	return f.Title
+	return ReadableTitle(f.Title)
 }
 
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {

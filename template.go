@@ -225,7 +225,7 @@ a.button:hover {
 	`
 	layoutTemplate = `
 <head>
-  <title>{{.Title}}</title>
+  <title>{{.PageTitle}}</title>
   <!--[if lt IE 9]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -314,12 +314,12 @@ a.button:hover {
 {{define "content"}}
  <section class='feature'>
     <p class='image'>
-      <img alt='' src='/movies/{{.Image}}'>
+      <img alt='' src='/movies/{{.Feature.Image}}'>
     </p>
-    <h3>{{.Name}}</h3>
-    <p>{{.Description}}</p>
+    <h3>{{.Feature.Name}} ({{.Feature.Year}})</h3>
+    <p>{{.Feature.Description}}</p>
     <p class='information'>
-      <a class='img' href='{{.ImdbLink}}'>
+      <a class='img' href='{{.Feature.ImdbLink}}'>
         <img alt='[More Information]' src='/img/info.png'>
       </a>
     </p>
@@ -357,21 +357,14 @@ a.button:hover {
 )
 
 type ComputerTemplateData struct {
-	Id          int
-	Name        string
-	InfoLink    string
-	Description string
-	Image       string
+	PageTitle   string
+	Computer    *Computer
 	Appearances []Appearance
 }
 
 type FeatureTemplateData struct {
-	Id          int
-	Title       string
-	Image       string
-	Name        string
-	ImdbLink    string
-	Description string
+	PageTitle   string
+	Feature     *Feature
 	Appearances []Appearance
 }
 

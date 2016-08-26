@@ -1,7 +1,10 @@
 package main
 
-import "database/sql"
-import "strings"
+import (
+	"database/sql"
+	"fmt"
+	"strings"
+)
 
 type Identifier interface {
 	Identity() int
@@ -35,22 +38,11 @@ func MakeStarsInfo(label string, stars int, txt sql.NullString) StarsInfo {
 	si.Text = txt.String
 	si.LabelAlt = label + ":"
 	si.LabelImage = strings.ToLower(label) + ".png"
-	switch {
-	case stars == 1:
-		si.StarsAlt = "*"
+	si.StarsAlt = strings.Repeat("*", stars)
+	if stars == 1 {
 		si.StarsImage = "1star.png"
-	case stars == 2:
-		si.StarsAlt = "**"
-		si.StarsImage = "2stars.png"
-	case stars == 3:
-		si.StarsAlt = "***"
-		si.StarsImage = "3stars.png"
-	case stars == 4:
-		si.StarsAlt = "****"
-		si.StarsImage = "4stars.png"
-	case stars == 5:
-		si.StarsAlt = "*****"
-		si.StarsImage = "5stars.png"
+	} else {
+		si.StarsImage = fmt.Sprintf("%dstars.png", stars)
 	}
 	return si
 }

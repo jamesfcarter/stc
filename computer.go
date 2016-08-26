@@ -33,11 +33,8 @@ func (c *Computer) TemplateData(deep, hidden bool) ComputerTemplateData {
 		appearances, _ = c.Stc.ComputerAppearances(c, hidden)
 	}
 	return ComputerTemplateData{
-		Id:          c.Id,
-		Image:       c.Image,
-		Name:        c.Name(),
-		InfoLink:    c.InfoLink,
-		Description: c.Description,
+		PageTitle:   PageTitle(c.Name()),
+		Computer:    c,
 		Appearances: appearances,
 	}
 }
