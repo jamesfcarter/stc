@@ -283,6 +283,7 @@ a.button:hover {
   </footer>
 </body>
 {{define "miniindex"}}
+  {{if gt (len .) 1}}
     <p class='links'>
     {{range .}}
       <a href='#{{.Subject.Identity}}'>
@@ -290,6 +291,7 @@ a.button:hover {
       </a>
     {{end}}
     </p>
+  {{end}}
 {{end}}
 {{define "star"}}
   <img alt='{{.LabelAlt}}' src='/img/{{.LabelImage}}'>
@@ -332,22 +334,66 @@ a.button:hover {
           <img alt='' src='/computers/{{.Computer.Image}}'>
         </p>
         <h3>
-          <a href='/computer.html?c=/{{.Computer.Id}}'>{{.Computer.Name}}</a>
+          <a href='/computer.html?c={{.Computer.Id}}'>{{.Computer.Name}}</a>
         </h3>
         <p>{{.Description}}</p>
         <p class='comment'>
           <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
             Add a comment.
           </a>
-	  {{template "stars" .}}
-	  <div class='film'>
+        </p>
+	{{template "stars" .}}
+	<div class='film'>
           <div>
-	  {{range .Images}}
+	    {{range .Images}}
             <img alt='' src='/snapshots/{{.}}'>
-	  {{end}}
+	    {{end}}
           </div>
         </div>
+      </article>
+    {{end}}
+    </section>
+  </section>
+{{end}}
+    `
+	computerTemplate = `
+{{define "content"}}
+ <section class='computer'>
+    <p class='image'>
+      <img alt='' src='/computers/{{.Computer.Image}}'>
+    </p>
+    <h3>{{.Computer.Name}}</h3>
+    <p>{{.Computer.Description}}</p>
+    <p class='information'>
+      <a class='img' href='{{.Computer.InfoLink}}'>
+        <img alt='[More Information]' src='/img/info.png'>
+      </a>
+    </p>
+    {{template "miniindex" .Appearances}}
+    <section class='appearances'>
+    {{range .Appearances}}
+      <article class='appearance' id='{{.Subject.Identity}}'>
+	<hr>
+	<p class='image'>
+          <img alt='' src='/movies/{{.Feature.Image}}'>
         </p>
+        <h3>
+          <a href='/feature.html?f={{.Feature.Id}}'>{{.Feature.Name}}</a>
+        </h3>
+        <p>{{.Description}}</p>
+        <p class='comment'>
+          <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
+            Add a comment.
+          </a>
+        </p>
+	{{template "stars" .}}
+	<div class='film'>
+          <div>
+	    {{range .Images}}
+            <img alt='' src='/snapshots/{{.}}'>
+	    {{end}}
+          </div>
+        </div>
       </article>
     {{end}}
     </section>
@@ -374,6 +420,7 @@ func MakeTemplates() (*Templates, error) {
 	result := make(Templates)
 	for name, tmpl := range map[string]string{
 		"feature":    layoutTemplate + featureTemplate,
+		"computer":   layoutTemplate + computerTemplate,
 		"stylesheet": stylesheetTemplate,
 	} {
 		t, err := template.New(name).Parse(tmpl)

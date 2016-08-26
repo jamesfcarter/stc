@@ -51,6 +51,7 @@ func main() {
 	http.Handle("/favicon.ico", fs)
 
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
+	http.HandleFunc("/computer.html", stc.ComputerHandler)
 	http.HandleFunc("/stylesheet.css", func(w http.ResponseWriter, r *http.Request) {
 		err = stc.Template.Exec("stylesheet", w, nil)
 		if err != nil {

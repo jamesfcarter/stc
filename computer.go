@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"strconv"
+)
 
 type Computer struct {
 	Stc          *Stc
@@ -45,4 +50,24 @@ func (c *Computer) Identity() int {
 
 func (c *Computer) Name() string {
 	return fmt.Sprintf("%s %s", c.Manufacturer, c.Model)
+}
+
+func (stc *Stc) ComputerHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("c"))
+	if err != nil {
+		http.Error(w, "bad computer id", 400)
+		return
+	}
+	c, err := stc.LoadComputer(id)
+	if err != nil {
+		log.Printf("%v", err)
+		http.Error(w, "bad computer id", 400)
+		return
+	}
+	err = stc.Template.Exec("computer", w, c.TemplateData(true, false))
+	if err != nil {
+		log.Printf("%v", err)
+		http.Error(w, "bad feature", 500)
+		return
+	}
 }
