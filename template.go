@@ -393,13 +393,42 @@ a.button:hover {
 	<div class='film'>
           <div>
 	    {{range .Images}}
-            <img alt='' src='/snapshots/{{.}}'>
+	      <img alt='' src='/snapshots/{{.}}'>
 	    {{end}}
           </div>
         </div>
       </article>
     {{end}}
     </section>
+  </section>
+{{end}}
+    `
+	indexTemplate = `
+{{define "content"}}
+  <section class='edgefilm'>
+    <section class='atoz'>
+	{{range $index, $element := .Index.Indices}}
+	  {{ if gt $index 0 }}|{{end}}
+	  <a href="#{{.}}">{{.}}</a>
+	{{end}}
+	{{if .Index.AltName}}
+	  <br>
+	  <a href='{{.Index.AltLink}}'>sort by {{.Index.AltName}}</a>
+	{{end}}
+    </section>
+    {{range $index, $items := .Index.Entries}}
+      <h3 id='{{$index}}'>{{$index}}</h3>
+      <ul>
+        {{range $items}}
+	  <li>
+	    <a href='{{.Link}}'>{{.Name}}</a>
+	    <article class='sublist'>
+	      {{.Things}}
+	    </article>
+	  </li>
+	{{end}}
+      </ul>
+    {{end}}
   </section>
 {{end}}
     `
@@ -417,11 +446,17 @@ type FeatureTemplateData struct {
 	Appearances []Appearance
 }
 
+type IndexTemplate struct {
+	PageTitle string
+	Index     *Index
+}
+
 type Templates map[string]*template.Template
 
 func MakeTemplates() (*Templates, error) {
 	result := make(Templates)
 	for name, tmpl := range map[string]string{
+		"index":      layoutTemplate + indexTemplate,
 		"feature":    layoutTemplate + featureTemplate,
 		"computer":   layoutTemplate + computerTemplate,
 		"stylesheet": stylesheetTemplate,

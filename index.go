@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 )
 
 type IndexItem struct {
@@ -77,17 +78,29 @@ func (stc *Stc) LoadFeaturesByName() (*Index, error) {
 		}
 		things := ""
 		for _, a := range appears {
-			things += "&bull;&nbsp" + NonBroken(a.Computer.Name()) + "\n"
+			things += NonBroken("• "+a.Computer.Name()) + " "
 		}
 
 		index := IndexChar(f.Title)
 
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   f.Name(),
-			Link:   fmt.Sprintf("/feature.html?f=&d", f.Id),
+			Link:   fmt.Sprintf("/feature.html?f=%d", f.Id),
 			Things: things,
 		})
 	}
 
 	return i, nil
+}
+
+func (stc *Stc) FeaturesHandler(w http.ResponseWriter, r *http.Request) {
+	err := stc.Template.Exec("index", w, &IndexTemplate{
+		PageTitle: "",
+		Index:     stc.FeaturesByName,
+	})
+	if err != nil {
+		log.Printf("%v", err)
+		http.Error(w, "bad index", 500)
+		return
+	}
 }

@@ -33,5 +33,13 @@ func IndexChar(s string) string {
 }
 
 func NonBroken(s string) string {
-	return strings.Replace(s, " ", "&nbsp;", -1)
+	var result []rune
+	for _, r := range s {
+		if r == '\u0020' {
+			result = append(result, '\u00A0')
+		} else {
+			result = append(result, r)
+		}
+	}
+	return string(result)
 }
