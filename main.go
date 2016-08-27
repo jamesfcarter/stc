@@ -12,6 +12,7 @@ type Stc struct {
 	Db             *sql.DB
 	Template       *Templates
 	FeaturesByName *Index
+	FeaturesByYear *Index
 }
 
 func main() {
@@ -62,8 +63,13 @@ func main() {
 	http.Handle("/favicon.ico", fs)
 
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
-	http.HandleFunc("/features.html", stc.FeaturesHandler)
 	http.HandleFunc("/computer.html", stc.ComputerHandler)
+
+	http.HandleFunc("/features.html",
+		stc.MakeIndexHandler(stc.FeaturesByName))
+	http.HandleFunc("/featuresyear.html",
+		stc.MakeIndexHandler(stc.FeaturesByYear))
+
 	http.HandleFunc("/stylesheet.css", func(w http.ResponseWriter, r *http.Request) {
 		err = stc.Template.Exec("stylesheet", w, nil)
 		if err != nil {
