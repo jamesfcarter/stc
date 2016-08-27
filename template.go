@@ -505,24 +505,28 @@ a.button:hover {
 {{end}}
     `
 	newsTemplate = `
+{{define "nav"}}
+  <section class='atoz'>
+    {{if .Newer}}
+    <a href='/news.html?{{.Newer}}'>Newer articles</a>
+    {{else}}
+    Newer articles
+    {{end}}
+    |
+    {{if .Older}}
+    <a href='/news.html?{{.Older}}'>Older articles</a>
+    {{else}}
+    Older articles
+    {{end}}
+  </section>
+{{end}}
 {{define "content"}}
   <section class='edgefilm'>
   <section>
     <h2>News</h2>
-    <section class='atoz'>
-      {{if .Newer}}
-	<a href='/news.html?{{.Newer}}'>Newer articles</a>
-      {{else}}
-	Newer articles
-      {{end}}
-      |
-      {{if .Older}}
-	<a href='/news.html?{{.Older}}'>Older articles</a>
-      {{else}}
-	Older articles
-      {{end}}
-    </section>
+    {{template "nav" .}}
     {{template "newsarticles" .News}}
+    {{template "nav" .}}
   </section>
   </section>
 {{end}}
