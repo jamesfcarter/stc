@@ -4,19 +4,25 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"time"
 )
 
 type Stc struct {
 	Db                      *sql.DB
 	Template                *Templates
+	Root                    string
+	Film                    *Film
 	FeaturesByName          *Index
 	FeaturesByYear          *Index
 	ComputersByManufacturer *Index
 }
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	stc := &Stc{}
 
 	endpoint := os.Getenv("STC_ENDPOINT")
@@ -40,11 +46,11 @@ func main() {
 		log.Fatalf("can't communicate with db: %v", err)
 	}
 
-	fsRoot := os.Getenv("STC_ROOT")
-	if fsRoot == "" {
+	stc.Root = os.Getenv("STC_ROOT")
+	if stc.Root == "" {
 		panic("STC_ROOT not set")
 	}
-	fs := http.FileServer(http.Dir(fsRoot))
+	fs := http.FileServer(http.Dir(stc.Root))
 
 	stc.Template, err = MakeTemplates()
 	if err != nil {
@@ -56,12 +62,19 @@ func main() {
 		log.Fatalf("could not load indices: %v", err)
 	}
 
+	stc.Film, err = stc.NewFilm()
+	if err != nil {
+		log.Fatalf("could not build film image: %v", err)
+	}
+
 	http.Handle("/movies/", fs)
 	http.Handle("/computers/", fs)
 	http.Handle("/snapshots/", fs)
 	http.Handle("/unprocessed/", fs)
 	http.Handle("/img/", fs)
 	http.Handle("/favicon.ico", fs)
+
+	http.HandleFunc("/film.jpg", stc.FilmHandler)
 
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
 	http.HandleFunc("/computer.html", stc.ComputerHandler)
