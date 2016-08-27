@@ -48,11 +48,11 @@ func (stc *Stc) LoadFeaturesByName() (*Index, error) {
 		Entries: map[string][]IndexItem{},
 	}
 
-	rows, err := stc.Db.Query("SELECT feature.id FROM feature,tv " +
-		"WHERE feature.id = tv.feature ORDER BY feature.title," +
-		"tv.season,tv.episode,tv.title")
+	rows, err := stc.Db.Query("SELECT feature.id FROM " +
+		"feature LEFT JOIN tv ON feature.id = tv.feature " +
+		"ORDER BY feature.title,tv.season,tv.episode,tv.title")
 	if err != nil {
-		log.Print(err)
+		log.Printf("LoadFeaturesByName1: %v", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -61,19 +61,19 @@ func (stc *Stc) LoadFeaturesByName() (*Index, error) {
 		var featId int
 		err = rows.Scan(&featId)
 		if err != nil {
-			log.Print(err)
+			log.Printf("LoadFeaturesByName2: %v", err)
 			return nil, err
 		}
 
 		f, err := stc.LoadFeature(featId)
 		if err != nil {
-			log.Print(err)
+			log.Printf("LoadFeaturesByName3 (%d): %v", featId, err)
 			return nil, err
 		}
 
 		appears, err := stc.FeatureAppearances(f, false)
 		if err != nil {
-			log.Print(err)
+			log.Printf("LoadFeaturesByName4: %v", err)
 			return nil, err
 		}
 		things := ""

@@ -29,15 +29,15 @@ func (stc *Stc) LoadTv(id int) (*Tv, error) {
 
 func (t *Tv) FullName() string {
 	parts := []string{}
-	if t.Season.Valid {
+	if t.Season.Int64 > 0 {
 		parts = append(parts,
 			fmt.Sprintf("Season %d", t.Season.Int64))
 	}
-	if t.Episode.Valid {
+	if t.Episode.Int64 > 0 {
 		parts = append(parts,
 			fmt.Sprintf("Episode %d", t.Episode.Int64))
 	}
-	if t.Title.Valid {
+	if t.Title.String != "" {
 		parts = append(parts,
 			"\""+ReadableTitle(t.Title.String)+"\"")
 	}
@@ -57,15 +57,18 @@ type Feature struct {
 func (stc *Stc) LoadFeature(id int) (*Feature, error) {
 	f := &Feature{}
 
+	var imdbLink sql.NullString
+
 	err := stc.Db.QueryRow("SELECT "+
 		"title, is_tv_episode, year, imdb_link, description"+
 		" FROM feature WHERE id=?", id).Scan(&f.Title, &f.IsTvEpisode,
-		&f.Year, &f.ImdbLink, &f.Description)
+		&f.Year, &imdbLink, &f.Description)
 	if err != nil {
 		return nil, err
 	}
 	f.Id = id
 	f.Stc = stc
+	f.ImdbLink = imdbLink.String
 	return f, nil
 }
 
@@ -100,7 +103,10 @@ func (f *Feature) Name() string {
 		if err != nil {
 			log.Print(err)
 		} else {
-			name += " - " + tv.FullName()
+			epname := tv.FullName()
+			if epname != "" {
+				name += " - " + epname
+			}
 		}
 	}
 	return name
