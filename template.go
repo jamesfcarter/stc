@@ -408,8 +408,12 @@ a.button:hover {
   <section class='edgefilm'>
     <section class='atoz'>
 	{{range $index, $element := .Index.Indices}}
-	  {{ if gt $index 0 }}|{{end}}
-	  <a href="#{{.}}">{{.}}</a>
+	  {{if gt $index 0}}|{{end}}
+	  {{if .Link}} 
+	    <a href="#{{.Link}}">{{.Name}}</a>
+	  {{else}}
+	    {{.Name}}
+	  {{end}}
 	{{end}}
 	{{if .Index.AltName}}
 	  <br>

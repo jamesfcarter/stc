@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"strings"
+	"unicode"
+)
 
 func ReadableTitle(title string) string {
 	for _, prefix := range []string{
@@ -24,12 +27,15 @@ func PageTitle(title string) string {
 }
 
 func IndexChar(s string) string {
-	var first string
+	var first rune
 	for _, c := range s {
-		first = string(c)
+		first = c
 		break
 	}
-	return strings.ToUpper(first)
+	if unicode.IsDigit(first) {
+		return "0"
+	}
+	return strings.ToUpper(string(first))
 }
 
 func NonBroken(s string) string {

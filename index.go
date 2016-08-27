@@ -12,8 +12,13 @@ type IndexItem struct {
 	Things string
 }
 
+type IndexPoint struct {
+	Name string
+	Link string
+}
+
 type Index struct {
-	Indices []string
+	Indices []IndexPoint
 	AltName string
 	AltLink string
 	Entries map[string][]IndexItem
@@ -48,11 +53,39 @@ func (stc *Stc) LoadIndices() error {
 	return nil
 }
 
+func (i *Index) addIndexPoint(name, link string) {
+	curLen := len(i.Indices)
+	if curLen == 0 || i.Indices[curLen-1].Name != name {
+		i.Indices = append(i.Indices, IndexPoint{
+			Name: name,
+			Link: link,
+		})
+	}
+}
+
+func (i *Index) addAlphaIndexPoint(name string) {
+	curLen := len(i.Indices)
+	for ix, n := range "0ABCDEFGHIJKLMNOPQRSTUVWXYZ" {
+		in := string(n)
+		if curLen > ix {
+			if in == name {
+				break
+			}
+			continue
+		}
+		if in == name {
+			i.addIndexPoint(name, name)
+			break
+		}
+		i.addIndexPoint(in, "")
+	}
+}
+
 func (stc *Stc) LoadFeaturesByName() (*Index, error) {
 	log.Print("Loading FeaturesByName index")
 
 	i := &Index{
-		Indices: AToZ(),
+		Indices: []IndexPoint{},
 		AltName: "year",
 		AltLink: "featuresyear.html",
 		Entries: map[string][]IndexItem{},
@@ -92,6 +125,7 @@ func (stc *Stc) LoadFeaturesByName() (*Index, error) {
 		}
 
 		index := IndexChar(f.Title)
+		i.addAlphaIndexPoint(index)
 
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   f.Name(),
@@ -107,7 +141,7 @@ func (stc *Stc) LoadFeaturesByYear() (*Index, error) {
 	log.Print("Loading FeaturesByYear index")
 
 	i := &Index{
-		Indices: []string{},
+		Indices: []IndexPoint{},
 		AltName: "name",
 		AltLink: "features.html",
 		Entries: map[string][]IndexItem{},
@@ -147,10 +181,7 @@ func (stc *Stc) LoadFeaturesByYear() (*Index, error) {
 		}
 
 		index := fmt.Sprintf("%d", (f.Year/10)*10)
-		if len(i.Indices) == 0 ||
-			i.Indices[len(i.Indices)-1] != index {
-			i.Indices = append(i.Indices, index)
-		}
+		i.addIndexPoint(index, index)
 
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   f.Name(),
@@ -166,7 +197,7 @@ func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
 	log.Print("Loading ComputersByManufacturer index")
 
 	i := &Index{
-		Indices: AToZ(),
+		Indices: []IndexPoint{},
 		AltName: "",
 		AltLink: "",
 		Entries: map[string][]IndexItem{},
@@ -205,6 +236,7 @@ func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
 		}
 
 		index := IndexChar(c.Manufacturer)
+		i.addAlphaIndexPoint(index)
 
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   c.Name(),
