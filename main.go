@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
@@ -18,6 +19,19 @@ type Stc struct {
 	FeaturesByName          *Index
 	FeaturesByYear          *Index
 	ComputersByManufacturer *Index
+}
+
+func (stc *Stc) ReloadHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	start := time.Now()
+	w.Write([]byte("Starting index reload...\n"))
+	err := stc.LoadIndices()
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("FAILED: %v", err)))
+	} else {
+		w.Write([]byte(fmt.Sprintf("Completed in %fs\n",
+			time.Since(start).Seconds())))
+	}
 }
 
 func (stc *Stc) BasicHandler(template, title string) func(w http.ResponseWriter, r *http.Request) {
@@ -101,6 +115,9 @@ func main() {
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
 	http.HandleFunc("/computer.html", stc.ComputerHandler)
 	http.HandleFunc("/news.html", stc.NewsHandler)
+
+	http.HandleFunc("/reload", stc.ReloadHandler)
+	http.HandleFunc("/update", stc.ReloadHandler)
 
 	http.HandleFunc("/features.html",
 		stc.IndexHandler(stc.FeaturesByName))
