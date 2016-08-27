@@ -322,6 +322,14 @@ a.button:hover {
           </a>
         </p>
 {{end}}
+{{define "newsarticles"}}
+  <dl>
+  {{range .}}
+    <dt>{{.Stamp.Format "2006-01-02 15:04"}} {{.Title}}</dt>
+    <dd>{{.Text.Format}}</dd>
+  {{end}}
+  </dl>
+{{end}}
     `
 	featureTemplate = `
 {{define "content"}}
@@ -459,6 +467,10 @@ a.button:hover {
     </p>
     <hr>
   </article>
+  <section>
+    <h2>News</h2>
+    {{template "newsarticles" .News}}
+  </section>
 {{end}}
     `
 	helpTemplate = `

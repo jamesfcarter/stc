@@ -22,8 +22,18 @@ type Stc struct {
 
 func (stc *Stc) BasicHandler(template, title string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := stc.Template.Exec(template, w,
-			struct{ PageTitle string }{title})
+		var err error
+		news := []News{}
+		if template == "intro" {
+			news, err = stc.LoadNews(0, 16)
+			if err != nil {
+				log.Printf("failed to load news: %v", err)
+			}
+		}
+		err = stc.Template.Exec(template, w, struct {
+			PageTitle string
+			News      []News
+		}{title, news})
 		if err != nil {
 			log.Printf("%v", err)
 			http.Error(w, "bad "+template, 500)
