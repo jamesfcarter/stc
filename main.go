@@ -9,10 +9,11 @@ import (
 )
 
 type Stc struct {
-	Db             *sql.DB
-	Template       *Templates
-	FeaturesByName *Index
-	FeaturesByYear *Index
+	Db                      *sql.DB
+	Template                *Templates
+	FeaturesByName          *Index
+	FeaturesByYear          *Index
+	ComputersByManufacturer *Index
 }
 
 func main() {
@@ -69,6 +70,8 @@ func main() {
 		stc.MakeIndexHandler(stc.FeaturesByName))
 	http.HandleFunc("/featuresyear.html",
 		stc.MakeIndexHandler(stc.FeaturesByYear))
+	http.HandleFunc("/computers.html",
+		stc.MakeIndexHandler(stc.ComputersByManufacturer))
 
 	http.HandleFunc("/stylesheet.css", func(w http.ResponseWriter, r *http.Request) {
 		err = stc.Template.Exec("stylesheet", w, nil)

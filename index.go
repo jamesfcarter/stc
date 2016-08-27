@@ -40,6 +40,11 @@ func (stc *Stc) LoadIndices() error {
 		return err
 	}
 
+	stc.ComputersByManufacturer, err = stc.LoadComputersByManufacturer()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -150,6 +155,60 @@ func (stc *Stc) LoadFeaturesByYear() (*Index, error) {
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   f.Name(),
 			Link:   fmt.Sprintf("/feature.html?f=%d", f.Id),
+			Things: things,
+		})
+	}
+
+	return i, nil
+}
+
+func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
+	log.Print("Loading ComputersByManufacturer index")
+
+	i := &Index{
+		Indices: AToZ(),
+		AltName: "",
+		AltLink: "",
+		Entries: map[string][]IndexItem{},
+	}
+
+	rows, err := stc.Db.Query("SELECT id FROM computer " +
+		"ORDER BY manufacturer, model")
+	if err != nil {
+		log.Printf("LoadComputersByManufacturer1: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var compId int
+		err = rows.Scan(&compId)
+		if err != nil {
+			log.Printf("LoadComputersByManufacturer2: %v", err)
+			return nil, err
+		}
+
+		c, err := stc.LoadComputer(compId)
+		if err != nil {
+			log.Printf("LoadComputersByManufacturer3 (%d): %v", compId, err)
+			return nil, err
+		}
+
+		appears, err := stc.ComputerAppearances(c, false)
+		if err != nil {
+			log.Printf("LoadComputersByManufacturer4: %v", err)
+			return nil, err
+		}
+		things := ""
+		for _, a := range appears {
+			things += NonBroken("• "+a.Feature.Name()) + " "
+		}
+
+		index := IndexChar(c.Manufacturer)
+
+		i.Entries[index] = append(i.Entries[index], IndexItem{
+			Name:   c.Name(),
+			Link:   fmt.Sprintf("/computer.html?c=%d", c.Id),
 			Things: things,
 		})
 	}
