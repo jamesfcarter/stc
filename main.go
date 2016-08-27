@@ -25,7 +25,7 @@ func (stc *Stc) BasicHandler(template, title string) func(w http.ResponseWriter,
 		var err error
 		news := []News{}
 		if template == "intro" {
-			news, err = stc.LoadNews(0, 16)
+			news, err = stc.LoadNews(0, 10)
 			if err != nil {
 				log.Printf("failed to load news: %v", err)
 			}
@@ -100,6 +100,7 @@ func main() {
 
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
 	http.HandleFunc("/computer.html", stc.ComputerHandler)
+	http.HandleFunc("/news.html", stc.NewsHandler)
 
 	http.HandleFunc("/features.html",
 		stc.IndexHandler(stc.FeaturesByName))

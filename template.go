@@ -224,6 +224,7 @@ a.button:hover {
   text-decoration: none; }
 	`
 	layoutTemplate = `
+<html>
 <head>
   <title>{{.PageTitle}}</title>
   <!--[if lt IE 9]>
@@ -264,6 +265,8 @@ a.button:hover {
       </span>
     </nav>
   </header>
+</body>
+</html>
 {{template "content" .}}
   <footer>
     <hr>
@@ -498,6 +501,30 @@ a.button:hover {
 	  please get in touch!
         </p>
   <a class="twitter-timeline" href="https://twitter.com/StarringTheComp">Tweets by StarringTheComp</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </section>
+{{end}}
+    `
+	newsTemplate = `
+{{define "content"}}
+  <section class='edgefilm'>
+  <section>
+    <h2>News</h2>
+    <section class='atoz'>
+      {{if .Newer}}
+	<a href='/news.html?{{.Newer}}'>Newer articles</a>
+      {{else}}
+	Newer articles
+      {{end}}
+      |
+      {{if .Older}}
+	<a href='/news.html?{{.Older}}'>Older articles</a>
+      {{else}}
+	Older articles
+      {{end}}
+    </section>
+    {{template "newsarticles" .News}}
+  </section>
+  </section>
 {{end}}
     `
 )
@@ -512,6 +539,21 @@ type FeatureTemplateData struct {
 	PageTitle   string
 	Feature     *Feature
 	Appearances []Appearance
+}
+
+type NewsTemplateData struct {
+	PageTitle string
+	LinkNewer string
+	LinkOlder string
+	News      []News
+}
+
+func (n NewsTemplateData) Newer() template.URL {
+	return template.URL(n.LinkNewer)
+}
+
+func (n NewsTemplateData) Older() template.URL {
+	return template.URL(n.LinkOlder)
 }
 
 type IndexTemplate struct {
@@ -533,6 +575,7 @@ func MakeTemplates() (*Templates, error) {
 		"computer":   withLayout(computerTemplate),
 		"intro":      withLayout(introTemplate),
 		"help":       withLayout(helpTemplate),
+		"news":       withLayout(newsTemplate),
 		"stylesheet": stylesheetTemplate,
 	} {
 		t, err := template.New(name).Parse(tmpl)
