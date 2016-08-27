@@ -311,6 +311,17 @@ a.button:hover {
 	  {{template "star" .VisibilityInfo}}
         </p>
 {{end}}
+{{define "apppearancelink"}}
+        <p class='comment'>
+          <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
+            Add a comment
+	    {{- if gt (len .Comments) 0 -}}
+	      &nbsp;({{len .Comments}})
+	    {{- end -}}
+	    .
+          </a>
+        </p>
+{{end}}
     `
 	featureTemplate = `
 {{define "content"}}
@@ -337,11 +348,7 @@ a.button:hover {
           <a href='/computer.html?c={{.Computer.Id}}'>{{.Computer.Name}}</a>
         </h3>
         <p>{{.Description}}</p>
-        <p class='comment'>
-          <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
-            Add a comment.
-          </a>
-        </p>
+	{{template "apppearancelink" .}}
 	{{template "stars" .}}
 	<div class='film'>
           <div>
@@ -381,11 +388,7 @@ a.button:hover {
           <a href='/feature.html?f={{.Feature.Id}}'>{{.Feature.Name}}</a>
         </h3>
         <p>{{.Description}}</p>
-        <p class='comment'>
-          <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
-            Add a comment.
-          </a>
-        </p>
+	{{template "apppearancelink" .}}
 	{{template "stars" .}}
 	<div class='film'>
           <div>

@@ -22,3 +22,16 @@ func PageTitle(title string) string {
 	}
 	return result
 }
+
+func IndexChar(s string) string {
+	var first string
+	for _, c := range s {
+		first = string(c)
+		break
+	}
+	return strings.ToUpper(first)
+}
+
+func NonBroken(s string) string {
+	return strings.Replace(s, " ", "&nbsp;", -1)
+}

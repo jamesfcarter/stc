@@ -3,12 +3,23 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
+	"time"
 )
 
 type Identifier interface {
 	Identity() int
 	Name() string
+}
+
+type Comment struct {
+	Id           int
+	Stamp        time.Time
+	Name         string
+	Text         string
+	Approved     bool
+	ApprovalCode string
 }
 
 type Appearance struct {
@@ -23,6 +34,7 @@ type Appearance struct {
 	VisibilityStars int
 	Visibility      sql.NullString
 	Images          []string
+	Comments        []Comment
 }
 
 type StarsInfo struct {
@@ -66,6 +78,7 @@ func (stc *Stc) AppearanceImages(computer, feature int) []string {
 		"file FROM image WHERE feature=? AND computer=?",
 		feature, computer)
 	if err != nil {
+		log.Print(err)
 		return result
 	}
 	defer rows.Close()
@@ -74,9 +87,38 @@ func (stc *Stc) AppearanceImages(computer, feature int) []string {
 		var file string
 		err = rows.Scan(&file)
 		if err != nil {
+			log.Print(err)
 			continue
 		}
 		result = append(result, file)
+	}
+
+	return result
+}
+
+func (stc *Stc) AppearanceComments(computer, feature int) []Comment {
+	result := []Comment{}
+
+	rows, err := stc.Db.Query("SELECT "+
+		"id, stamp, name, text, approved, approval_code"+
+		" FROM comment WHERE approved=1 AND"+
+		" feature=? AND computer=?",
+		feature, computer)
+	if err != nil {
+		log.Print(err)
+		return result
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var c Comment
+		err = rows.Scan(&c.Id, &c.Stamp, &c.Name, &c.Text,
+			&c.Approved, &c.ApprovalCode)
+		if err != nil {
+			log.Print(err)
+			continue
+		}
+		result = append(result, c)
 	}
 
 	return result
@@ -115,6 +157,7 @@ func (stc *Stc) FeatureAppearances(f *Feature,
 		}
 		a.Subject = a.Computer
 		a.Images = stc.AppearanceImages(a.Computer.Id, a.Feature.Id)
+		a.Comments = stc.AppearanceComments(a.Computer.Id, a.Feature.Id)
 		result = append(result, a)
 	}
 
@@ -154,6 +197,7 @@ func (stc *Stc) ComputerAppearances(c *Computer,
 		}
 		a.Subject = a.Feature
 		a.Images = stc.AppearanceImages(a.Computer.Id, a.Feature.Id)
+		a.Comments = stc.AppearanceComments(a.Computer.Id, a.Feature.Id)
 		result = append(result, a)
 	}
 

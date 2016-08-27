@@ -9,12 +9,18 @@ import (
 )
 
 type Stc struct {
-	Db       *sql.DB
-	Template *Templates
+	Db             *sql.DB
+	Template       *Templates
+	FeaturesByName *Index
 }
 
 func main() {
 	stc := &Stc{}
+
+	endpoint := os.Getenv("STC_ENDPOINT")
+	if endpoint == "" {
+		endpoint = ":8080"
+	}
 
 	// user:pass@tcp(host:3306)/database
 	dbSpec := os.Getenv("STC_DB")
@@ -22,7 +28,7 @@ func main() {
 		log.Fatal("STC_DB not set")
 	}
 	var err error
-	stc.Db, err = sql.Open("mysql", dbSpec)
+	stc.Db, err = sql.Open("mysql", dbSpec+"?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,6 +49,11 @@ func main() {
 		log.Fatalf("could not make templates: %v", err)
 	}
 
+	err = stc.LoadIndices()
+	if err != nil {
+		log.Fatalf("could not load indices: %v", err)
+	}
+
 	http.Handle("/movies/", fs)
 	http.Handle("/computers/", fs)
 	http.Handle("/snapshots/", fs)
@@ -60,5 +71,7 @@ func main() {
 			return
 		}
 	})
-	http.ListenAndServe(":8080", nil)
+
+	log.Printf("Starting service on %s", endpoint)
+	http.ListenAndServe(endpoint, nil)
 }
