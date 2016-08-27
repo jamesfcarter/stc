@@ -20,6 +20,18 @@ type Stc struct {
 	ComputersByManufacturer *Index
 }
 
+func (stc *Stc) BasicHandler(template, title string) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := stc.Template.Exec(template, w,
+			struct{ PageTitle string }{title})
+		if err != nil {
+			log.Printf("%v", err)
+			http.Error(w, "bad "+template, 500)
+			return
+		}
+	}
+}
+
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
@@ -80,11 +92,11 @@ func main() {
 	http.HandleFunc("/computer.html", stc.ComputerHandler)
 
 	http.HandleFunc("/features.html",
-		stc.MakeIndexHandler(stc.FeaturesByName))
+		stc.IndexHandler(stc.FeaturesByName))
 	http.HandleFunc("/featuresyear.html",
-		stc.MakeIndexHandler(stc.FeaturesByYear))
+		stc.IndexHandler(stc.FeaturesByYear))
 	http.HandleFunc("/computers.html",
-		stc.MakeIndexHandler(stc.ComputersByManufacturer))
+		stc.IndexHandler(stc.ComputersByManufacturer))
 
 	http.HandleFunc("/stylesheet.css", func(w http.ResponseWriter, r *http.Request) {
 		err = stc.Template.Exec("stylesheet", w, nil)
@@ -94,6 +106,12 @@ func main() {
 			return
 		}
 	})
+
+	http.HandleFunc("/help.html",
+		stc.BasicHandler("help", "Starring the Computer"))
+	indexHandler := stc.BasicHandler("intro", "Starring the Computer")
+	http.HandleFunc("/index.html", indexHandler)
+	http.HandleFunc("/", indexHandler)
 
 	log.Printf("Starting service on %s", endpoint)
 	http.ListenAndServe(endpoint, nil)

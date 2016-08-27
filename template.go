@@ -436,6 +436,58 @@ a.button:hover {
   </section>
 {{end}}
     `
+	introTemplate = `
+{{define "content"}}
+  <section class='edgefilm'>
+  <article class='introduction'>
+    <p>
+    <b>Starring the Computer</b> is a website dedicated to the use of
+    computers in film and television. Each appearance is catalogued and
+    rated on its importance (ie. how important it is to the plot), realism
+    (how close its appearance and capabilities are to the real thing) and
+    visibility (how good a look does one get of it). Fictional computers
+    don't count (unless they are built out of bits of real computer), so no
+    HAL9000 - sorry.
+    </p>
+    <p>
+    Please <a href="help.html">let me know</a> if you spot any mistakes, or
+    have any tips about films not mentioned here that feature computers.
+    </p>
+    <p class='signature'>
+    <a href='http://www.jfc.org.uk'>James Carter</a>
+    &lt;<a href='mailto:james@starringthecomputer.com'>james@starringthecomputer.com</a>&gt;
+    </p>
+    <hr>
+  </article>
+{{end}}
+    `
+	helpTemplate = `
+{{define "content"}}
+  <section class='edgefilm'>
+  <section>
+      <h2>Ways to help</h2>
+      <p>
+        I'd very much appreciate your helping in making
+        <a href='/'>starringthecomputer.com</a>
+        the best it can be.
+      </p>
+      <h3>Something missing?</h3>
+      <p>
+        You can help me by letting me know if there is any movie or TV program
+        with a computer in it that I don't already know about. Apart from the
+        appearances listed here I have a (rather disorganised)
+        <a href='/movies.txt'>list of pending features</a>
+        that you should check before
+        <a href="mailto:james@starringthecomputer.com">mailing me</a>.
+      </p>
+      <h3>Most wanted</h3>
+      <p>
+          Can you identify any of the machines in these pictures? If so,
+	  please get in touch!
+        </p>
+  <a class="twitter-timeline" href="https://twitter.com/StarringTheComp">Tweets by StarringTheComp</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+{{end}}
+    `
 )
 
 type ComputerTemplateData struct {
@@ -457,12 +509,18 @@ type IndexTemplate struct {
 
 type Templates map[string]*template.Template
 
+func withLayout(t string) string {
+	return layoutTemplate + t
+}
+
 func MakeTemplates() (*Templates, error) {
 	result := make(Templates)
 	for name, tmpl := range map[string]string{
-		"index":      layoutTemplate + indexTemplate,
-		"feature":    layoutTemplate + featureTemplate,
-		"computer":   layoutTemplate + computerTemplate,
+		"index":      withLayout(indexTemplate),
+		"feature":    withLayout(featureTemplate),
+		"computer":   withLayout(computerTemplate),
+		"intro":      withLayout(introTemplate),
+		"help":       withLayout(helpTemplate),
 		"stylesheet": stylesheetTemplate,
 	} {
 		t, err := template.New(name).Parse(tmpl)
