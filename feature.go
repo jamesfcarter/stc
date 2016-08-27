@@ -109,7 +109,7 @@ func (f *Feature) Name() string {
 			}
 		}
 	}
-	return name
+	return fmt.Sprintf("%s (%d)", name, f.Year)
 }
 
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {

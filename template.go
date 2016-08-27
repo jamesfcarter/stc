@@ -329,7 +329,7 @@ a.button:hover {
     <p class='image'>
       <img alt='' src='/movies/{{.Feature.Image}}'>
     </p>
-    <h3>{{.Feature.Name}} ({{.Feature.Year}})</h3>
+    <h3>{{.Feature.Name}}</h3>
     <p>{{.Feature.Description}}</p>
     <p class='information'>
       <a class='img' href='{{.Feature.ImdbLink}}'>
