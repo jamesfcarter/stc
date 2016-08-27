@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"strings"
@@ -26,13 +25,13 @@ type Appearance struct {
 	Subject         Identifier
 	Feature         *Feature
 	Computer        *Computer
-	Description     string
+	Description     Markup
 	RealismStars    int
-	Realism         sql.NullString
+	Realism         Markup
 	ImportanceStars int
-	Importance      sql.NullString
+	Importance      Markup
 	VisibilityStars int
-	Visibility      sql.NullString
+	Visibility      Markup
 	Images          []string
 	Comments        []Comment
 }
@@ -42,12 +41,12 @@ type StarsInfo struct {
 	LabelImage string
 	StarsAlt   string
 	StarsImage string
-	Text       string
+	Text       Markup
 }
 
-func MakeStarsInfo(label string, stars int, txt sql.NullString) StarsInfo {
+func MakeStarsInfo(label string, stars int, txt Markup) StarsInfo {
 	var si StarsInfo
-	si.Text = txt.String
+	si.Text = txt
 	si.LabelAlt = label + ":"
 	si.LabelImage = strings.ToLower(label) + ".png"
 	si.StarsAlt = strings.Repeat("*", stars)

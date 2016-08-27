@@ -12,7 +12,7 @@ type Computer struct {
 	Id           int
 	Manufacturer string
 	Model        string
-	Description  string
+	Description  Markup
 	Image        string
 	InfoLink     string
 }

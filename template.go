@@ -298,7 +298,7 @@ a.button:hover {
   <img alt='{{.StarsAlt}}' src='/img/{{.StarsImage}}'>
   {{if .Text}}
     <br>
-    {{.Text}}
+    {{.Text.Format}}
     <br>
   {{end}}
 {{end}}
@@ -330,7 +330,7 @@ a.button:hover {
       <img alt='' src='/movies/{{.Feature.Image}}'>
     </p>
     <h3>{{.Feature.Name}}</h3>
-    <p>{{.Feature.Description}}</p>
+    <p>{{.Feature.Description.Format}}</p>
     <p class='information'>
       <a class='img' href='{{.Feature.ImdbLink}}'>
         <img alt='[More Information]' src='/img/info.png'>
@@ -347,7 +347,7 @@ a.button:hover {
         <h3>
           <a href='/computer.html?c={{.Computer.Id}}'>{{.Computer.Name}}</a>
         </h3>
-        <p>{{.Description}}</p>
+        <p>{{.Description.Format}}</p>
 	{{template "apppearancelink" .}}
 	{{template "stars" .}}
 	<div class='film'>
@@ -370,7 +370,7 @@ a.button:hover {
       <img alt='' src='/computers/{{.Computer.Image}}'>
     </p>
     <h3>{{.Computer.Name}}</h3>
-    <p>{{.Computer.Description}}</p>
+    <p>{{.Computer.Description.Format}}</p>
     <p class='information'>
       <a class='img' href='{{.Computer.InfoLink}}'>
         <img alt='[More Information]' src='/img/info.png'>
@@ -387,7 +387,7 @@ a.button:hover {
         <h3>
           <a href='/feature.html?f={{.Feature.Id}}'>{{.Feature.Name}}</a>
         </h3>
-        <p>{{.Description}}</p>
+        <p>{{.Description.Format}}</p>
 	{{template "apppearancelink" .}}
 	{{template "stars" .}}
 	<div class='film'>

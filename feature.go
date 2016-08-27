@@ -51,7 +51,7 @@ type Feature struct {
 	IsTvEpisode bool
 	Year        int
 	ImdbLink    string
-	Description string
+	Description Markup
 }
 
 func (stc *Stc) LoadFeature(id int) (*Feature, error) {

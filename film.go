@@ -161,6 +161,6 @@ func (stc *Stc) FilmHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
 	_, err = w.Write(buffer.Bytes())
 	if err != nil {
-		log.Printf("failed to output film", err)
+		log.Printf("failed to output film: %v", err)
 	}
 }
