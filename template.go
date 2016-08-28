@@ -4,9 +4,38 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"strings"
+	"time"
 )
 
 const (
+	rssTemplate = `
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <atom:link href="http://www.starringthecomputer.com/stc.rss" rel="self" type="application/rss+xml" />
+    <title>Starring the Computer</title>
+    <link>http://www.starringthecomputer.com</link>
+    <description>Starring the Computer is a website dedicated to the use of computer in movies and television.</description>
+    <language>en</language>
+    <copyright>Copyright 2007-{{.Now.Year}} James Carter</copyright>
+    <lastBuildDate>{{.Now.Format .RssFormat}}</lastBuildDate>
+    <image>
+      <url>http://www.starringthecomputer.com/img/starringthecomputer.png</url>
+      <title>Starring the Computer</title>
+      <link>http://www.starringthecomputer.com</link>
+    </image>
+    {{range .News}}
+    <item>
+      <title>{{.Title}}</title>
+      <link>http://www.starringthecomputer.com/newsitem.html?i={{$.RssIndexURL .Stamp}}</link>
+      <description>{{html .Text.FormatFullUrl}}</description>
+      <pubDate>{{.Stamp.Format $.RssFormat}}</pubDate>
+      <guid isPermaLink="true">http://www.starringthecomputer.com/newsitem.html?i={{$.RssIndexURL .Stamp}}</guid>
+    </item>
+    {{end}}
+  </channel>
+</rss>
+    `
 	stylesheetTemplate = `
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
 @import url(http://fonts.googleapis.com/css?family=Special+Elite);
@@ -531,6 +560,15 @@ a.button:hover {
   </section>
 {{end}}
     `
+	newsitemTemplate = `
+{{define "content"}}
+  <section class='edgefilm'>
+  <section>
+    {{template "newsarticles" .News}}
+  </section>
+  </section>
+{{end}}
+    `
 )
 
 type ComputerTemplateData struct {
@@ -550,6 +588,20 @@ type NewsTemplateData struct {
 	LinkNewer string
 	LinkOlder string
 	News      []News
+}
+
+type RssTemplateData struct {
+	Now       time.Time
+	RssFormat string
+	IndexTime string
+	News      []News
+}
+
+func (r RssTemplateData) RssIndexURL(t time.Time) template.URL {
+	s := t.Format(r.IndexTime)
+	s = strings.Replace(s, " ", "%20", -1)
+	s = strings.Replace(s, "+", "%2B", -1)
+	return template.URL(s)
 }
 
 func (n NewsTemplateData) Newer() template.URL {
@@ -580,7 +632,9 @@ func MakeTemplates() (*Templates, error) {
 		"intro":      withLayout(introTemplate),
 		"help":       withLayout(helpTemplate),
 		"news":       withLayout(newsTemplate),
+		"newsitem":   withLayout(newsitemTemplate),
 		"stylesheet": stylesheetTemplate,
+		"rss":        rssTemplate,
 	} {
 		t, err := template.New(name).Parse(tmpl)
 		if err != nil {

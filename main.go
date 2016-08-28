@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
@@ -114,10 +114,13 @@ func main() {
 
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
 	http.HandleFunc("/computer.html", stc.ComputerHandler)
+	http.HandleFunc("/newsitem.html", stc.NewsItemHandler)
 	http.HandleFunc("/news.html", stc.NewsHandler)
 
 	http.HandleFunc("/reload", stc.ReloadHandler)
 	http.HandleFunc("/update", stc.ReloadHandler)
+
+	http.HandleFunc("/stc.rss", stc.RssHandler)
 
 	http.HandleFunc("/features.html",
 		stc.IndexHandler(stc.FeaturesByName))

@@ -52,6 +52,15 @@ func (m Markup) Format() template.HTML {
 		}))
 }
 
+func (m Markup) FormatFullUrl() template.HTML {
+	unformatted := string(m)
+
+	return template.HTML(MarkupRe.ReplaceAllStringFunc(unformatted,
+		func(s string) string {
+			return replace(s, true)
+		}))
+}
+
 func (m *Markup) Scan(value interface{}) error {
 	*m = ""
 	if value != nil {
