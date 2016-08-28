@@ -108,7 +108,9 @@ func main() {
 	http.Handle("/snapshots/", fs)
 	http.Handle("/unprocessed/", fs)
 	http.Handle("/img/", fs)
+
 	http.Handle("/favicon.ico", fs)
+	http.Handle("/movies.txt", fs)
 
 	http.HandleFunc("/film.jpg", stc.FilmHandler)
 
