@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"strings"
 	"unicode"
 )
@@ -48,4 +49,17 @@ func NonBroken(s string) string {
 		}
 	}
 	return string(result)
+}
+
+func SimpleForm(r *http.Request) map[string]string {
+	form := map[string]string{}
+
+	r.ParseForm()
+	for key, val := range r.Form {
+		if len(val) < 1 {
+			continue
+		}
+		form[key] = val[0]
+	}
+	return form
 }

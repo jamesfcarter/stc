@@ -53,7 +53,9 @@ func (c *Computer) Name() string {
 }
 
 func (stc *Stc) ComputerHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("c"))
+	form := SimpleForm(r)
+
+	id, err := strconv.Atoi(form["c"])
 	if err != nil {
 		http.Error(w, "bad computer id", 400)
 		return

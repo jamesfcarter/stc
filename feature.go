@@ -113,7 +113,9 @@ func (f *Feature) Name() string {
 }
 
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("f"))
+	form := SimpleForm(r)
+
+	id, err := strconv.Atoi(form["f"])
 	if err != nil {
 		http.Error(w, "bad feature id", 400)
 		return

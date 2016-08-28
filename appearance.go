@@ -238,15 +238,15 @@ func (stc *Stc) LoadAppearance(fId, cId int) (*Appearance, error) {
 }
 
 func (stc *Stc) AppearanceHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+	form := SimpleForm(r)
 
-	fId, err := strconv.Atoi(strings.Join(r.Form["f"], ""))
+	fId, err := strconv.Atoi(form["f"])
 	if err != nil {
 		http.Error(w, "bad feature id", 400)
 		return
 	}
 
-	cId, err := strconv.Atoi(strings.Join(r.Form["c"], ""))
+	cId, err := strconv.Atoi(form["c"])
 	if err != nil {
 		http.Error(w, "bad computer id", 400)
 		return

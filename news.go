@@ -62,7 +62,9 @@ func (stc *Stc) NewsTotal() (int, error) {
 }
 
 func (stc *Stc) NewsItemHandler(w http.ResponseWriter, r *http.Request) {
-	item := r.URL.Query().Get("i")
+	form := SimpleForm(r)
+
+	item := form["i"]
 	if item == "" {
 		http.Error(w, "bad item id", 400)
 		return
@@ -88,11 +90,13 @@ func (stc *Stc) NewsItemHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (stc *Stc) NewsHandler(w http.ResponseWriter, r *http.Request) {
-	offset, err := strconv.Atoi(r.URL.Query().Get("o"))
+	form := SimpleForm(r)
+
+	offset, err := strconv.Atoi(form["o"])
 	if err != nil {
 		offset = 0
 	}
-	count, err := strconv.Atoi(r.URL.Query().Get("s"))
+	count, err := strconv.Atoi(form["s"])
 	if err != nil {
 		count = 16
 	}
