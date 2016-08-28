@@ -112,6 +112,7 @@ func main() {
 
 	http.HandleFunc("/film.jpg", stc.FilmHandler)
 
+	http.HandleFunc("/appearance.html", stc.AppearanceHandler)
 	http.HandleFunc("/feature.html", stc.FeatureHandler)
 	http.HandleFunc("/computer.html", stc.ComputerHandler)
 	http.HandleFunc("/newsitem.html", stc.NewsItemHandler)

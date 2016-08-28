@@ -362,6 +362,58 @@ a.button:hover {
   {{end}}
   </dl>
 {{end}}
+{{define "film"}}
+  <div class='film'>
+    <div>
+      {{range .Images}}
+      <img alt='' src='/snapshots/{{.}}'>
+      {{end}}
+    </div>
+  </div>
+{{end}}
+    `
+	appearanceTemplate = `
+{{define "content"}}
+  <section class='appearance'>
+    <p class='image'>
+      <img alt='' src='/computers/{{.Appearance.Computer.Image}}'>
+      <br>
+      <img alt='' src='/movies/{{.Appearance.Feature.Image}}'>
+    </p>
+    <h2>{{.Appearance.Computer.Name}} in {{.Appearance.Feature.Name}}</h2>
+    <p>{{.Appearance.Description.Format}}</p>
+    {{template "stars" .Appearance}}
+    <section class='comments'>
+      <h3><img alt='Comments:' href='/img/comments.png'></h3>
+      <article class='commentform'>
+        <form action='/appearance.html' method='post'>
+	  <p>
+	    <input name='c' type='hidden' value='{{.Appearance.Computer.Id}}'>
+	    <input name='f' type='hidden' value='{{.Appearance.Feature.Id}}'>
+	    Name:
+	    <input name='n' type='text' value=''><br><br>
+	    Comment:<br>
+	    <textarea cols='60' name='t' rows='6'></textarea><br><br>
+	    Year of feature (shown above):
+	    <input name='y' type='text' value=''><br><br>
+	    <input name='post' type='submit' value='Post Comment'>
+	  </p>
+	</form>
+      </article>
+      {{range .Appearance.Comments}}
+        <article class='comment'>
+	  <hr>
+	  <h4>{{.Name}}</h4>
+	  <p>
+	    {{.Text}}
+	    <br><span class='date'>{{.Stamp.Format $.IndexTime}}</span>
+	  </p>
+        </article>
+      {{end}}
+    </section>
+    {{template "film" .Appearance}}
+  </section>
+{{end}}
     `
 	featureTemplate = `
 {{define "content"}}
@@ -369,7 +421,7 @@ a.button:hover {
     <p class='image'>
       <img alt='' src='/movies/{{.Feature.Image}}'>
     </p>
-    <h3>{{.Feature.Name}}</h3>
+    <h2>{{.Feature.Name}}</h2>
     <p>{{.Feature.Description.Format}}</p>
     <p class='information'>
       <a class='img' href='{{.Feature.ImdbLink}}'>
@@ -390,13 +442,7 @@ a.button:hover {
         <p>{{.Description.Format}}</p>
 	{{template "apppearancelink" .}}
 	{{template "stars" .}}
-	<div class='film'>
-          <div>
-	    {{range .Images}}
-            <img alt='' src='/snapshots/{{.}}'>
-	    {{end}}
-          </div>
-        </div>
+	{{template "film" .}}
       </article>
     {{end}}
     </section>
@@ -409,7 +455,7 @@ a.button:hover {
     <p class='image'>
       <img alt='' src='/computers/{{.Computer.Image}}'>
     </p>
-    <h3>{{.Computer.Name}}</h3>
+    <h2>{{.Computer.Name}}</h2>
     <p>{{.Computer.Description.Format}}</p>
     <p class='information'>
       <a class='img' href='{{.Computer.InfoLink}}'>
@@ -430,13 +476,7 @@ a.button:hover {
         <p>{{.Description.Format}}</p>
 	{{template "apppearancelink" .}}
 	{{template "stars" .}}
-	<div class='film'>
-          <div>
-	    {{range .Images}}
-	      <img alt='' src='/snapshots/{{.}}'>
-	    {{end}}
-          </div>
-        </div>
+	{{template "film" .}}
       </article>
     {{end}}
     </section>
@@ -571,6 +611,12 @@ a.button:hover {
     `
 )
 
+type AppearanceTemplateData struct {
+	PageTitle  string
+	Appearance *Appearance
+	IndexTime  string
+}
+
 type ComputerTemplateData struct {
 	PageTitle   string
 	Computer    *Computer
@@ -627,6 +673,7 @@ func MakeTemplates() (*Templates, error) {
 	result := make(Templates)
 	for name, tmpl := range map[string]string{
 		"index":      withLayout(indexTemplate),
+		"appearance": withLayout(appearanceTemplate),
 		"feature":    withLayout(featureTemplate),
 		"computer":   withLayout(computerTemplate),
 		"intro":      withLayout(introTemplate),

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -201,4 +203,73 @@ func (stc *Stc) ComputerAppearances(c *Computer,
 	}
 
 	return result, nil
+}
+
+func (stc *Stc) LoadAppearance(fId, cId int) (*Appearance, error) {
+	a := &Appearance{}
+
+	err := stc.Db.QueryRow("SELECT  description, "+
+		"importance_stars, importance, "+
+		"realism_stars, realism, "+
+		"visibility_stars, visibility "+
+		"FROM appearance WHERE "+
+		"feature=? AND computer=? AND visible=true",
+		fId, cId).Scan(&a.Description,
+		&a.ImportanceStars, &a.Importance,
+		&a.RealismStars, &a.Realism,
+		&a.VisibilityStars, &a.Visibility)
+	if err != nil {
+		return nil, err
+	}
+
+	a.Feature, err = stc.LoadFeature(fId)
+	if err != nil {
+		return nil, err
+	}
+
+	a.Computer, err = stc.LoadComputer(cId)
+	if err != nil {
+		return nil, err
+	}
+	a.Images = stc.AppearanceImages(a.Computer.Id, a.Feature.Id)
+	a.Comments = stc.AppearanceComments(a.Computer.Id, a.Feature.Id)
+
+	return a, nil
+}
+
+func (stc *Stc) AppearanceHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	fId, err := strconv.Atoi(strings.Join(r.Form["f"], ""))
+	if err != nil {
+		http.Error(w, "bad feature id", 400)
+		return
+	}
+
+	cId, err := strconv.Atoi(strings.Join(r.Form["c"], ""))
+	if err != nil {
+		http.Error(w, "bad computer id", 400)
+		return
+	}
+
+	a, err := stc.LoadAppearance(fId, cId)
+	if err != nil {
+		log.Printf("%v", err)
+		http.Error(w, "bad appearance id", 400)
+		return
+	}
+
+	title := PageTitle(a.Computer.Name() + " in " + a.Feature.Name())
+
+	err = stc.Template.Exec("appearance", w, AppearanceTemplateData{
+		PageTitle:  title,
+		Appearance: a,
+		IndexTime:  "2006-01-02 15:04",
+	})
+	if err != nil {
+		log.Printf("%v", err)
+		http.Error(w, "bad appearance", 500)
+		return
+	}
+
 }
