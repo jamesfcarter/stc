@@ -386,19 +386,26 @@ a.button:hover {
     <section class='comments'>
       <h3><img alt='Comments:' href='/img/comments.png'></h3>
       <article class='commentform'>
+      {{if .Form.Created}}
+        <p class='approval'>
+	  Your comment has been submitted for approval and will appear here
+	  shortly. Thanks!
+	</p>
+      {{else}}
         <form action='/appearance.html' method='post'>
 	  <p>
 	    <input name='c' type='hidden' value='{{.Appearance.Computer.Id}}'>
 	    <input name='f' type='hidden' value='{{.Appearance.Feature.Id}}'>
-	    Name:
-	    <input name='n' type='text' value=''><br><br>
-	    Comment:<br>
-	    <textarea cols='60' name='t' rows='6'></textarea><br><br>
-	    Year of feature (shown above):
-	    <input name='y' type='text' value=''><br><br>
+	    {{.Form.Label "Name"}}
+	    <input name='n' type='text' value='{{.Form.Name}}'><br><br>
+	    {{.Form.Label "Comment"}}<br>
+	    <textarea cols='60' name='t' rows='6'>{{.Form.Comment}}</textarea><br><br>
+	    {{.Form.Label "Year of feature (shown above)"}}
+	    <input name='y' type='text' value='{{.Form.Year}}'><br><br>
 	    <input name='post' type='submit' value='Post Comment'>
 	  </p>
 	</form>
+      {{end}}
       </article>
       {{range .Appearance.Comments}}
         <article class='comment'>
@@ -614,6 +621,7 @@ a.button:hover {
 type AppearanceTemplateData struct {
 	PageTitle  string
 	Appearance *Appearance
+	Form       *CommentForm
 	IndexTime  string
 }
 

@@ -264,6 +264,7 @@ func (stc *Stc) AppearanceHandler(w http.ResponseWriter, r *http.Request) {
 	err = stc.Template.Exec("appearance", w, AppearanceTemplateData{
 		PageTitle:  title,
 		Appearance: a,
+		Form:       ParseCommentForm(form, a.Feature),
 		IndexTime:  "2006-01-02 15:04",
 	})
 	if err != nil {
