@@ -47,7 +47,7 @@ func (stc *Stc) BasicHandler(template, title string) func(w http.ResponseWriter,
 		err = stc.Template.Exec(template, w, struct {
 			PageTitle string
 			News      []News
-		}{title, news})
+		}{PageTitle(title), news})
 		if err != nil {
 			log.Printf("%v", err)
 			http.Error(w, "bad "+template, 500)
@@ -140,8 +140,8 @@ func main() {
 	})
 
 	http.HandleFunc("/help.html",
-		stc.BasicHandler("help", "Starring the Computer"))
-	indexHandler := stc.BasicHandler("intro", "Starring the Computer")
+		stc.BasicHandler("help", ""))
+	indexHandler := stc.BasicHandler("intro", "")
 	http.HandleFunc("/index.html", indexHandler)
 	http.HandleFunc("/", indexHandler)
 

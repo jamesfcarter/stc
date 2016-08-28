@@ -75,7 +75,7 @@ func (stc *Stc) NewsItemHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = stc.Template.Exec("newsitem", w, NewsTemplateData{
-		PageTitle: "Starring the Computer - " + news[0].Title,
+		PageTitle: PageTitle(news[0].Title),
 		LinkNewer: "",
 		LinkOlder: "",
 		News:      news,
@@ -123,7 +123,7 @@ func (stc *Stc) NewsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	err = stc.Template.Exec("news", w, NewsTemplateData{
-		PageTitle: "Starring the Computer",
+		PageTitle: PageTitle(""),
 		LinkNewer: newer,
 		LinkOlder: older,
 		News:      news,

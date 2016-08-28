@@ -251,7 +251,7 @@ func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
 func (stc *Stc) IndexHandler(index *Index) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := stc.Template.Exec("index", w, &IndexTemplate{
-			PageTitle: "Starring the Computer",
+			PageTitle: PageTitle(""),
 			Index:     index,
 		})
 		if err != nil {
