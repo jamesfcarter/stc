@@ -119,7 +119,13 @@ func (f *Film) Update() error {
 
 	images := make([]image.Image, FilmFrames)
 	for i := range images {
-		images[i], err = f.randomImage(imageWidth)
+		// Some images fail to load so allow a few retries
+		for n := 0; n < 10; n++ {
+			images[i], err = f.randomImage(imageWidth)
+			if err == nil {
+				break
+			}
+		}
 		if err != nil {
 			return err
 		}
