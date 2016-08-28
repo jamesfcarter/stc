@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
+	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -34,7 +36,7 @@ func (cf *CommentForm) Empty() bool {
 		cf.Year == ""
 }
 
-func ParseCommentForm(form map[string]string, feat *Feature) *CommentForm {
+func (stc *Stc) ParseCommentForm(form map[string]string, a *Appearance) *CommentForm {
 	cf := &CommentForm{
 		Name:    form["n"],
 		Comment: form["t"],
@@ -55,13 +57,13 @@ func ParseCommentForm(form map[string]string, feat *Feature) *CommentForm {
 		cf.Errors["year"] = "missing!"
 	} else {
 		year, err := strconv.Atoi(cf.Year)
-		if err != nil || year != feat.Year {
+		if err != nil || year != a.Feature.Year {
 			cf.Errors["year"] = "does not match!"
 		}
 	}
 
 	if cf.Valid() {
-		// FIXME: post comment
+		cf.Post(a)
 		return &CommentForm{
 			Errors:  map[string]string{},
 			Created: true,
@@ -69,4 +71,26 @@ func ParseCommentForm(form map[string]string, feat *Feature) *CommentForm {
 	}
 
 	return cf
+}
+
+func (cf *CommentForm) Post(a *Appearance) {
+	approvalCode := rand.Intn(1000000000)
+	stc := "http://starringthecomputer.com/"
+	linkApprove := fmt.Sprintf("%sapprove/%d", stc, approvalCode)
+	linkDeny := fmt.Sprintf("%sdeny/%d", stc, approvalCode)
+	link := fmt.Sprintf("%sappearance.html?f=%d&c=%d",
+		stc, a.Feature.Id, a.Computer.Id)
+
+	// FIXME: create comment
+
+	subject := "STC Comment from " + cf.Name
+	msg := "Name: " + cf.Name + "\n" +
+		"Comment: " + cf.Comment + "\n\n" +
+		"Feature: " + a.Feature.Name() + "\n" +
+		"Computer: " + a.Computer.Name() + "\n\n" +
+		link + "\n\n" +
+		"APPROVE: " + linkApprove + "\n" +
+		"DENY: " + linkDeny + "\n\n"
+
+	SendEmail(subject, msg)
 }
