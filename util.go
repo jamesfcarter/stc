@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"os/exec"
 	"strings"
 	"unicode"
 )
@@ -62,4 +64,40 @@ func SimpleForm(r *http.Request) map[string]string {
 		form[key] = val[0]
 	}
 	return form
+}
+
+func SendEmail(subject, body string) {
+	cmd := exec.Command("Mail", "-s", subject, "james@jfc.org.uk")
+
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		log.Printf("SendEmail1: %v", err)
+		return
+	}
+
+	err = cmd.Start()
+	if err != nil {
+		log.Printf("SendEmail2: %v", err)
+		return
+	}
+
+	_, err = stdin.Write([]byte(body))
+	if err != nil {
+		log.Printf("SendEmail3: %v", err)
+		return
+	}
+
+	err = stdin.Close()
+	if err != nil {
+		log.Printf("SendEmail4: %v", err)
+		return
+	}
+
+	err = cmd.Wait()
+	if err != nil {
+		log.Printf("SendEmail5: %v", err)
+		return
+	}
+
+	return
 }
