@@ -58,8 +58,10 @@ func (stc *Stc) BasicHandler(template, title string) func(w http.ResponseWriter,
 
 func Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		start := time.Now()
 		handler.ServeHTTP(w, r)
+		elapsed := time.Since(start)
+		log.Printf("%s %s %s", r.Method, r.URL, elapsed)
 	})
 }
 
