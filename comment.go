@@ -9,6 +9,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type CommentForm struct {
@@ -146,6 +147,14 @@ func (stc *Stc) CommentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad comment code", 400)
 		return
 	}
+
+	// Prevent a an attacker cycling through all the approval codes
+	// in a reasonable time.
+	_ = <-stc.ApprovalQueue
+	go func() {
+		time.Sleep(time.Second)
+		stc.ApprovalQueue <- struct{}{}
+	}()
 
 	switch action {
 	case "/approve/":

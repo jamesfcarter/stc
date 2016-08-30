@@ -19,6 +19,7 @@ type Stc struct {
 	FeaturesByName          *Index
 	FeaturesByYear          *Index
 	ComputersByManufacturer *Index
+	ApprovalQueue           chan struct{}
 }
 
 func (stc *Stc) ReloadHandler(w http.ResponseWriter, r *http.Request) {
@@ -106,6 +107,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not load indices: %v", err)
 	}
+
+	stc.ApprovalQueue = make(chan struct{}, 1)
+	stc.ApprovalQueue <- struct{}{}
 
 	stc.Film, err = stc.NewFilm()
 	if err != nil {
