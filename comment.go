@@ -78,7 +78,7 @@ func (stc *Stc) ParseCommentForm(form map[string]string, a *Appearance) *Comment
 }
 
 func (cf *CommentForm) Post(a *Appearance) {
-	approvalCode := rand.Intn(1000000000)
+	approvalCode := rand.Intn(1000000000 - 100000000) + 100000000
 	stc := "http://starringthecomputer.com/"
 	linkApprove := fmt.Sprintf("%sapprove/%d", stc, approvalCode)
 	linkDeny := fmt.Sprintf("%sdeny/%d", stc, approvalCode)
@@ -129,7 +129,7 @@ func (stc *Stc) CommentApprove(code int) error {
 
 func (stc *Stc) CommentDelete(code int) error {
 	res, err := stc.Db.Exec("DELETE FROM comment WHERE "+
-		"approval_code=?", code)
+		"approval_code=? AND approved=?", code, false)
 	if err != nil {
 		return err
 	}
