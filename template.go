@@ -106,10 +106,17 @@ header.banner {
     text-decoration: none; }
   header.banner nav {
     padding-top: 4px; }
-    header.banner nav img {
+    header.banner nav.menu {
+      margin-top: 20px;
+      margin-left: 48px; }
+    header.banner nav.menu img {
       margin-left: 14px;
       margin-right: 14px; }
-    header.banner nav span.social img {
+    header.banner nav.social {
+      margin-top: -64px;
+      margin-left: 352px;
+      width: 150px; }
+    header.banner nav.social img {
       margin-left: 0px;
       margin-right: 0px; }
 
@@ -271,7 +278,18 @@ a.button:hover {
         <img alt='Starring the Computer - computers in movies and television' src='/img/banner.png'>
       </a>
     </h1>
-    <nav>
+    <nav class='social'>
+      <a class='button' href='http://www.facebook.com/pages/Starring-the-Computer/25393451688'>
+        <img alt='[Facebook]' src='/img/facebook.png'>
+      </a>
+      <a class='button' href='https://twitter.com/StarringTheComp'>
+        <img alt='[Twitter]' src='/img/twitter.png'>
+      </a>
+      <a class='button' href='/stc.rss'>
+        <img alt='[RSS]' src='/img/rss.png'>
+      </a>
+    </nav>
+    <nav class='menu'>
       <a class='img' href='/news.html'>
         <img alt='[News]' src='/img/news.png'>
       </a>
@@ -284,14 +302,6 @@ a.button:hover {
       <a class='img' href='/help.html'>
         <img alt='[Help!]' src='/img/help.png'>
       </a>
-      <span class='social'>
-        <a class='button' href='http://www.facebook.com/pages/Starring-the-Computer/25393451688'>
-          <img alt='[Facebook]' src='/img/facebook.png'>
-        </a>
-        <a class='button' href='https://twitter.com/StarringTheComp'>
-          <img alt='[Twitter]' src='/img/twitter.png'>
-        </a>
-      </span>
     </nav>
   </header>
 </body>
@@ -305,6 +315,9 @@ a.button:hover {
       </a>
       <a href='https://twitter.com/StarringTheComp'>
         <img alt='[Twitter]' src='/img/twitter.png'>
+      </a>
+      <a href='/stc.rss'>
+        <img alt='[RSS]' src='/img/rss.png'>
       </a>
     </section>
     <address>
