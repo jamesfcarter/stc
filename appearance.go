@@ -23,6 +23,10 @@ type Comment struct {
 	ApprovalCode string
 }
 
+func (c Comment) IndexTime() string {
+	return IndexTimeFormat
+}
+
 type Appearance struct {
 	Subject         Identifier
 	Feature         *Feature
@@ -265,7 +269,6 @@ func (stc *Stc) AppearanceHandler(w http.ResponseWriter, r *http.Request) {
 		PageTitle:  title,
 		Appearance: a,
 		Form:       stc.ParseCommentForm(form, a),
-		IndexTime:  "2006-01-02 15:04",
 	})
 	if err != nil {
 		log.Printf("%v", err)

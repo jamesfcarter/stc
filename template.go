@@ -9,6 +9,11 @@ import (
 )
 
 const (
+	// Time formats ---------------------------------------------------
+	RssTimeFormat   = "Mon, 02 Jan 2006 15:04:05 -0700"
+	IndexTimeFormat = "2006-01-02 15:04"
+
+	// RSS ------------------------------------------------------------
 	rssTemplate = `
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
@@ -36,6 +41,8 @@ const (
   </channel>
 </rss>
     `
+
+	// CSS ------------------------------------------------------------
 	stylesheetTemplate = `
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
 @import url(http://fonts.googleapis.com/css?family=Special+Elite);
@@ -259,6 +266,8 @@ section.footerbuttonbox {
 a.button:hover {
   text-decoration: none; }
 	`
+
+	// LAYOUT ---------------------------------------------------------
 	layoutTemplate = `
 <html>
 <head>
@@ -356,7 +365,7 @@ a.button:hover {
 	  {{template "star" .VisibilityInfo}}
         </p>
 {{end}}
-{{define "apppearancelink"}}
+{{define "appearancelink"}}
         <p class='comment'>
           <a href='/appearance.html?f={{.Feature.Id}}&amp;c={{.Computer.Id}}'>
             Add a comment
@@ -370,7 +379,7 @@ a.button:hover {
 {{define "newsarticles"}}
   <dl>
   {{range .}}
-    <dt>{{.Stamp.Format "2006-01-02 15:04"}} {{.Title}}</dt>
+    <dt>{{.Stamp.Format .IndexTime}} {{.Title}}</dt>
     <dd>{{.Text.Format}}</dd>
   {{end}}
   </dl>
@@ -385,6 +394,8 @@ a.button:hover {
   </div>
 {{end}}
     `
+
+	// HTML -----------------------------------------------------------
 	appearanceTemplate = `
 {{define "content"}}
   <section class='appearance'>
@@ -426,7 +437,7 @@ a.button:hover {
 	  <h4>{{.Name}}</h4>
 	  <p>
 	    {{.Text}}
-	    <br><span class='date'>{{.Stamp.Format $.IndexTime}}</span>
+	    <br><span class='date'>{{.Stamp.Format .IndexTime}}</span>
 	  </p>
         </article>
       {{end}}
@@ -460,7 +471,7 @@ a.button:hover {
           <a href='/computer.html?c={{.Computer.Id}}'>{{.Computer.Name}}</a>
         </h3>
         <p>{{.Description.Format}}</p>
-	{{template "apppearancelink" .}}
+	{{template "appearancelink" .}}
 	{{template "stars" .}}
 	{{template "film" .}}
       </article>
@@ -494,7 +505,7 @@ a.button:hover {
           <a href='/feature.html?f={{.Feature.Id}}'>{{.Feature.Name}}</a>
         </h3>
         <p>{{.Description.Format}}</p>
-	{{template "apppearancelink" .}}
+	{{template "appearancelink" .}}
 	{{template "stars" .}}
 	{{template "film" .}}
       </article>
@@ -653,7 +664,6 @@ type AppearanceTemplateData struct {
 	PageTitle  string
 	Appearance *Appearance
 	Form       *CommentForm
-	IndexTime  string
 }
 
 type ComputerTemplateData struct {
@@ -678,12 +688,11 @@ type NewsTemplateData struct {
 type RssTemplateData struct {
 	Now       time.Time
 	RssFormat string
-	IndexTime string
 	News      []News
 }
 
 func (r RssTemplateData) RssIndexURL(t time.Time) template.URL {
-	s := t.Format(r.IndexTime)
+	s := t.Format(IndexTimeFormat)
 	s = strings.Replace(s, " ", "%20", -1)
 	s = strings.Replace(s, "+", "%2B", -1)
 	return template.URL(s)

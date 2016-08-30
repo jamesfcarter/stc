@@ -15,6 +15,10 @@ type News struct {
 	Stamp time.Time
 }
 
+func (n News) IndexTime() string {
+	return IndexTimeFormat
+}
+
 func (stc *Stc) LoadNews(offset, count int) ([]News, error) {
 	r := []News{}
 
@@ -151,8 +155,7 @@ func (stc *Stc) RssHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<?xml version='1.0' encoding='UTF-8'?>\n"))
 	err = stc.Template.Exec("rss", w, RssTemplateData{
 		Now:       time.Now(),
-		RssFormat: "Mon, 02 Jan 2006 15:04:05 -0700",
-		IndexTime: "2006-01-02 15:04",
+		RssFormat: RssTimeFormat,
 		News:      news,
 	})
 	if err != nil {
