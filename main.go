@@ -120,6 +120,10 @@ func main() {
 	http.HandleFunc("/newsitem.html", stc.NewsItemHandler)
 	http.HandleFunc("/news.html", stc.NewsHandler)
 
+	http.HandleFunc("/approve/", stc.CommentHandler)
+	http.HandleFunc("/deny/", stc.CommentHandler)
+	http.HandleFunc("/delete/", stc.CommentHandler)
+
 	http.HandleFunc("/reload", stc.ReloadHandler)
 	http.HandleFunc("/update", stc.ReloadHandler)
 

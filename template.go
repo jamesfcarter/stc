@@ -616,6 +616,24 @@ a.button:hover {
   </section>
 {{end}}
     `
+	approvecommentTemplate = `
+{{define "content"}}
+    <h1>Approved comment</h1>
+    <p>View it here: <a href='{{.Link}}'>{{.Link}}</a></p>
+{{end}}
+    `
+	denycommentTemplate = `
+{{define "content"}}
+    <h1>Deny comment</h1>
+    <p>View it here: <a href='{{.Link}}'>{{.Link}}</a></p>
+    <p>Click here to delete comment: <a href='{{.DelLink}}'>{{.DelLink}}</a></p>
+{{end}}
+    `
+	deletecommentTemplate = `
+{{define "content"}}
+    <h1>Comment deleted</h1>
+{{end}}
+    `
 )
 
 type AppearanceTemplateData struct {
@@ -680,16 +698,19 @@ func withLayout(t string) string {
 func MakeTemplates() (*Templates, error) {
 	result := make(Templates)
 	for name, tmpl := range map[string]string{
-		"index":      withLayout(indexTemplate),
-		"appearance": withLayout(appearanceTemplate),
-		"feature":    withLayout(featureTemplate),
-		"computer":   withLayout(computerTemplate),
-		"intro":      withLayout(introTemplate),
-		"help":       withLayout(helpTemplate),
-		"news":       withLayout(newsTemplate),
-		"newsitem":   withLayout(newsitemTemplate),
-		"stylesheet": stylesheetTemplate,
-		"rss":        rssTemplate,
+		"index":          withLayout(indexTemplate),
+		"appearance":     withLayout(appearanceTemplate),
+		"feature":        withLayout(featureTemplate),
+		"computer":       withLayout(computerTemplate),
+		"intro":          withLayout(introTemplate),
+		"help":           withLayout(helpTemplate),
+		"news":           withLayout(newsTemplate),
+		"newsitem":       withLayout(newsitemTemplate),
+		"approvecomment": withLayout(approvecommentTemplate),
+		"denycomment":    withLayout(denycommentTemplate),
+		"deletecomment":  withLayout(deletecommentTemplate),
+		"stylesheet":     stylesheetTemplate,
+		"rss":            rssTemplate,
 	} {
 		t, err := template.New(name).Parse(tmpl)
 		if err != nil {

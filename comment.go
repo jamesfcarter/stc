@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"html/template"
 	"math/rand"
+	"net/http"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -93,4 +95,84 @@ func (cf *CommentForm) Post(a *Appearance) {
 		"DENY: " + linkDeny + "\n\n"
 
 	SendEmail(subject, msg)
+}
+
+func (stc *Stc) CommentURL(code int) string {
+	var fId, cId int
+
+	_ = stc.Db.QueryRow("SELECT feature, computer FROM "+
+		"comment WHERE approval_code=?", code).Scan(&fId, &cId)
+	return fmt.Sprintf("/appearance.html?f=%d&c=%d", fId, cId)
+}
+
+func (stc *Stc) CommentApprove(code int) error {
+	res, err := stc.Db.Exec("UPDATE comment SET approved=? WHERE "+
+		"approval_code=?", true, code)
+	if err != nil {
+		return err
+	}
+	if rows, _ := res.RowsAffected(); rows != 1 {
+		return fmt.Errorf("Could not find comment to approve.")
+	}
+	return nil
+}
+
+func (stc *Stc) CommentDelete(code int) error {
+	res, err := stc.Db.Exec("DELETE FROM comment WHERE "+
+		"approval_code=?", code)
+	if err != nil {
+		return err
+	}
+	if rows, _ := res.RowsAffected(); rows != 1 {
+		return fmt.Errorf("Could not find comment to delete.")
+	}
+	return nil
+}
+
+func (stc *Stc) CommentHandler(w http.ResponseWriter, r *http.Request) {
+	p, codeS := path.Split(r.URL.Path)
+	_, action := path.Split(p)
+
+	code, err := strconv.Atoi(codeS)
+	if err != nil {
+		http.Error(w, "bad comment code", 400)
+		return
+	}
+
+	switch action {
+	case "approve":
+		err = stc.CommentApprove(code)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("%v", err), 400)
+			return
+		}
+		err = stc.Template.Exec("approvecomment", w, struct {
+			PageTitle string
+			Link      string
+		}{
+			PageTitle: PageTitle("Approved Comment"),
+			Link:      stc.CommentURL(code),
+		})
+	case "deny":
+		err = stc.Template.Exec("denycomment", w, struct {
+			PageTitle string
+			Link      string
+			DelLink   string
+		}{
+			PageTitle: PageTitle("Deny Comment"),
+			Link:      stc.CommentURL(code),
+			DelLink:   fmt.Sprintf("/delete/%d", code),
+		})
+	case "delete":
+		err = stc.CommentDelete(code)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("%v", err), 400)
+			return
+		}
+		err = stc.Template.Exec("deletecomment", w, struct {
+			PageTitle string
+		}{
+			PageTitle: PageTitle("Comment Deleted"),
+		})
+	}
 }
