@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"math/rand"
 	"net/http"
 	"path"
@@ -83,7 +84,15 @@ func (cf *CommentForm) Post(a *Appearance) {
 	link := fmt.Sprintf("%sappearance.html?f=%d&c=%d",
 		stc, a.Feature.Id, a.Computer.Id)
 
-	// FIXME: create comment
+	_, err := a.Feature.Stc.Db.Exec("INSERT comment SET "+
+		"feature=?, computer=?, name=?, text=?, "+
+		"approved=?, approval_code=?",
+		a.Feature.Id, a.Computer.Id,
+		cf.Name, cf.Comment, false, approvalCode)
+	if err != nil {
+		log.Printf("unable to store comment: %v")
+		return
+	}
 
 	subject := "STC Comment from " + cf.Name
 	msg := "Name: " + cf.Name + "\n" +
@@ -130,8 +139,7 @@ func (stc *Stc) CommentDelete(code int) error {
 }
 
 func (stc *Stc) CommentHandler(w http.ResponseWriter, r *http.Request) {
-	p, codeS := path.Split(r.URL.Path)
-	_, action := path.Split(p)
+	action, codeS := path.Split(r.URL.Path)
 
 	code, err := strconv.Atoi(codeS)
 	if err != nil {
@@ -140,7 +148,7 @@ func (stc *Stc) CommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch action {
-	case "approve":
+	case "/approve/":
 		err = stc.CommentApprove(code)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("%v", err), 400)
@@ -153,7 +161,7 @@ func (stc *Stc) CommentHandler(w http.ResponseWriter, r *http.Request) {
 			PageTitle: PageTitle("Approved Comment"),
 			Link:      stc.CommentURL(code),
 		})
-	case "deny":
+	case "/deny/":
 		err = stc.Template.Exec("denycomment", w, struct {
 			PageTitle string
 			Link      string
@@ -163,7 +171,7 @@ func (stc *Stc) CommentHandler(w http.ResponseWriter, r *http.Request) {
 			Link:      stc.CommentURL(code),
 			DelLink:   fmt.Sprintf("/delete/%d", code),
 		})
-	case "delete":
+	case "/delete/":
 		err = stc.CommentDelete(code)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("%v", err), 400)
