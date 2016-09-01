@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path"
 	"strconv"
 	"strings"
 )
@@ -115,9 +114,7 @@ func (f *Feature) Name() string {
 
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
 	form := SimpleForm(r)
-
-	_, x := path.Split(r.URL.Path)
-	hidden := strings.Contains(x, "hidden")
+	hidden := IsHidden(r)
 
 	id, err := strconv.Atoi(form["f"])
 	if err != nil {

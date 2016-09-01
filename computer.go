@@ -54,6 +54,7 @@ func (c *Computer) Name() string {
 
 func (stc *Stc) ComputerHandler(w http.ResponseWriter, r *http.Request) {
 	form := SimpleForm(r)
+	hidden := IsHidden(r)
 
 	id, err := strconv.Atoi(form["c"])
 	if err != nil {
@@ -66,7 +67,7 @@ func (stc *Stc) ComputerHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad computer id", 400)
 		return
 	}
-	err = stc.Template.Exec("computer", w, c.TemplateData(true, false))
+	err = stc.Template.Exec("computer", w, c.TemplateData(true, hidden))
 	if err != nil {
 		log.Printf("%v", err)
 		http.Error(w, "bad feature", 500)

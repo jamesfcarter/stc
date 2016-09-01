@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"path"
 	"strings"
 	"unicode"
 )
@@ -100,4 +101,9 @@ func SendEmail(subject, body string) {
 	}
 
 	return
+}
+
+func IsHidden(r *http.Request) bool {
+	_, x := path.Split(r.URL.Path)
+	return strings.Contains(x, "hidden")
 }
