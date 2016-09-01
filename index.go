@@ -119,6 +119,9 @@ func (stc *Stc) LoadFeaturesByName() (*Index, error) {
 			log.Printf("LoadFeaturesByName4: %v", err)
 			return nil, err
 		}
+		if len(appears) == 0 {
+			continue
+		}
 		things := ""
 		for _, a := range appears {
 			things += NonBroken("• "+a.Computer.Name()) + " "
@@ -175,6 +178,9 @@ func (stc *Stc) LoadFeaturesByYear() (*Index, error) {
 			log.Printf("LoadFeaturesByYear4: %v", err)
 			return nil, err
 		}
+		if len(appears) == 0 {
+			continue
+		}
 		things := ""
 		for _, a := range appears {
 			things += NonBroken("• "+a.Computer.Name()) + " "
@@ -229,6 +235,9 @@ func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
 		if err != nil {
 			log.Printf("LoadComputersByManufacturer4: %v", err)
 			return nil, err
+		}
+		if len(appears) == 0 {
+			continue
 		}
 		things := ""
 		for _, a := range appears {
