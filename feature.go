@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -115,6 +116,9 @@ func (f *Feature) Name() string {
 func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
 	form := SimpleForm(r)
 
+	_, x := path.Split(r.URL.Path)
+	hidden := strings.Contains(x, "hidden")
+
 	id, err := strconv.Atoi(form["f"])
 	if err != nil {
 		http.Error(w, "bad feature id", 400)
@@ -126,7 +130,7 @@ func (stc *Stc) FeatureHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad feature id", 400)
 		return
 	}
-	err = stc.Template.Exec("feature", w, f.TemplateData(true, false))
+	err = stc.Template.Exec("feature", w, f.TemplateData(true, hidden))
 	if err != nil {
 		log.Printf("%v", err)
 		http.Error(w, "bad feature", 500)
