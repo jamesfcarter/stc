@@ -249,11 +249,11 @@ func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
 	return i, nil
 }
 
-func (stc *Stc) IndexHandler(index *Index) func(w http.ResponseWriter, r *http.Request) {
+func (stc *Stc) IndexHandler(index func() *Index) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := stc.Template.Exec("index", w, &IndexTemplate{
 			PageTitle: PageTitle(""),
-			Index:     index,
+			Index:     index(),
 		})
 		if err != nil {
 			log.Printf("%v", err)

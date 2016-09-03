@@ -22,6 +22,18 @@ type Stc struct {
 	ApprovalQueue           chan struct{}
 }
 
+func (stc *Stc) IndexFeaturesByName() *Index {
+	return stc.FeaturesByName
+}
+
+func (stc *Stc) IndexFeaturesByYear() *Index {
+	return stc.FeaturesByYear
+}
+
+func (stc *Stc) IndexComputersByManufacturer() *Index {
+	return stc.ComputersByManufacturer
+}
+
 func (stc *Stc) ReloadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	start := time.Now()
@@ -145,11 +157,11 @@ func main() {
 	http.HandleFunc("/stc.rss", stc.RssHandler)
 
 	http.HandleFunc("/features.html",
-		stc.IndexHandler(stc.FeaturesByName))
+		stc.IndexHandler(stc.IndexFeaturesByName))
 	http.HandleFunc("/featuresyear.html",
-		stc.IndexHandler(stc.FeaturesByYear))
+		stc.IndexHandler(stc.IndexFeaturesByYear))
 	http.HandleFunc("/computers.html",
-		stc.IndexHandler(stc.ComputersByManufacturer))
+		stc.IndexHandler(stc.IndexComputersByManufacturer))
 
 	http.HandleFunc("/stylesheet.css", func(w http.ResponseWriter, r *http.Request) {
 		err = stc.Template.Exec("stylesheet", w, nil)
