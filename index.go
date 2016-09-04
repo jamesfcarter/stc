@@ -57,16 +57,17 @@ func (i *Index) addIndexPoint(name, link string) {
 
 func (i *Index) addAlphaIndexPoint(name string) {
 	curLen := len(i.Indices)
+	nameIndex := IndexChar(name)
 	for ix, n := range "0ABCDEFGHIJKLMNOPQRSTUVWXYZ" {
 		in := string(n)
 		if curLen > ix {
-			if in == name {
+			if in == nameIndex {
 				break
 			}
 			continue
 		}
-		if in == name {
-			i.addIndexPoint(name, name)
+		if in == nameIndex {
+			i.addIndexPoint(in, name)
 			break
 		}
 		i.addIndexPoint(in, "")
@@ -236,7 +237,7 @@ func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
 			things += NonBroken("• "+a.Feature.Name()) + " "
 		}
 
-		index := IndexChar(c.Manufacturer)
+		index := c.Manufacturer
 		i.addAlphaIndexPoint(index)
 
 		i.Entries[index] = append(i.Entries[index], IndexItem{
