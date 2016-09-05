@@ -23,10 +23,6 @@ type Comment struct {
 	ApprovalCode string
 }
 
-func (c Comment) IndexTime() string {
-	return IndexTimeFormat
-}
-
 type Appearance struct {
 	Subject         Identifier
 	Feature         *Feature

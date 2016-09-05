@@ -23,7 +23,7 @@ const (
     <description>Starring the Computer is a website dedicated to the use of computer in movies and television.</description>
     <language>en</language>
     <copyright>Copyright 2007-{{.Now.Year}} James Carter</copyright>
-    <lastBuildDate>{{.Now.Format .RssFormat}}</lastBuildDate>
+    <lastBuildDate>{{rssTime .Now}}</lastBuildDate>
     <image>
       <url>http://www.starringthecomputer.com/img/starringthecomputer.png</url>
       <title>Starring the Computer</title>
@@ -32,10 +32,10 @@ const (
     {{range .News}}
     <item>
       <title>{{.Title}}</title>
-      <link>http://www.starringthecomputer.com/newsitem.html?i={{$.RssIndexURL .Stamp}}</link>
+      <link>http://www.starringthecomputer.com/newsitem.html?i={{rssIndexURL .Stamp}}</link>
       <description>{{html .Text.FormatFullUrl}}</description>
-      <pubDate>{{.Stamp.Format $.RssFormat}}</pubDate>
-      <guid isPermaLink="true">http://www.starringthecomputer.com/newsitem.html?i={{$.RssIndexURL .Stamp}}</guid>
+      <pubDate>{{rssTime .Stamp}}</pubDate>
+      <guid isPermaLink="true">http://www.starringthecomputer.com/newsitem.html?i={{rssIndexURL .Stamp}}</guid>
     </item>
     {{end}}
   </channel>
@@ -272,9 +272,9 @@ a.button:hover {
 <html>
 <head>
   <title>{{.PageTitle}}</title>
-  <!--[if lt IE 9]>
+  {{ifIElt9}}
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+  {{endif}}
   <meta content='Computers in movies and television shows' name='description'>
   <link href='/stylesheet.css' rel='STYLESHEET' type='text/css'>
   <link href='/favicon.ico' rel='shortcut icon' type='image/x-icon'>
@@ -379,7 +379,7 @@ a.button:hover {
 {{define "newsarticles"}}
   <dl>
   {{range .}}
-    <dt>{{.Stamp.Format .IndexTime}} {{.Title}}</dt>
+    <dt>{{indexTime .Stamp}} {{.Title}}</dt>
     <dd>{{.Text.Format}}</dd>
   {{end}}
   </dl>
@@ -437,7 +437,7 @@ a.button:hover {
 	  <h4>{{.Name}}</h4>
 	  <p>
 	    {{.Text}}
-	    <br><span class='date'>{{.Stamp.Format .IndexTime}}</span>
+	    <br><span class='date'>{{indexTime .Stamp}}</span>
 	  </p>
         </article>
       {{end}}
@@ -686,16 +686,8 @@ type NewsTemplateData struct {
 }
 
 type RssTemplateData struct {
-	Now       time.Time
-	RssFormat string
-	News      []News
-}
-
-func (r RssTemplateData) RssIndexURL(t time.Time) template.URL {
-	s := t.Format(IndexTimeFormat)
-	s = strings.Replace(s, " ", "%20", -1)
-	s = strings.Replace(s, "+", "%2B", -1)
-	return template.URL(s)
+	Now  time.Time
+	News []News
 }
 
 func (n NewsTemplateData) Newer() template.URL {
@@ -734,7 +726,26 @@ func MakeTemplates() (*Templates, error) {
 		"stylesheet":     stylesheetTemplate,
 		"rss":            rssTemplate,
 	} {
-		t, err := template.New(name).Parse(tmpl)
+		t, err := template.New(name).Funcs(template.FuncMap{
+			"indexTime": func(t time.Time) string {
+				return t.Format(IndexTimeFormat)
+			},
+			"rssTime": func(t time.Time) string {
+				return t.Format(RssTimeFormat)
+			},
+			"rssIndexURL": func(t time.Time) template.URL {
+				s := t.Format(IndexTimeFormat)
+				s = strings.Replace(s, " ", "%20", -1)
+				s = strings.Replace(s, "+", "%2B", -1)
+				return template.URL(s)
+			},
+			"ifIElt9": func() template.HTML {
+				return template.HTML("<!--[if lt IE 9]>")
+			},
+			"endif": func() template.HTML {
+				return template.HTML("<![endif]-->")
+			},
+		}).Parse(tmpl)
 		if err != nil {
 			return &result, err
 		}
