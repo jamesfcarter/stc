@@ -531,10 +531,10 @@ a.button:hover {
 	  <a href='{{.Index.AltLink}}'>sort by {{.Index.AltName}}</a>
 	{{end}}
     </section>
-    {{range $index, $items := .Index.Entries}}
-      <h3 id='{{$index}}'>{{$index}}</h3>
+    {{range $index, $element := .Index.OrderedEntries}}
+      <h3 id='{{.Index}}'>{{.Index}}</h3>
       <ul>
-        {{range $items}}
+        {{range .Entries}}
 	  <li>
 	    <a href='{{.Link}}'>{{.Name}}</a>
 	    <article class='sublist'>

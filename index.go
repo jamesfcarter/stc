@@ -18,10 +18,16 @@ type IndexPoint struct {
 }
 
 type Index struct {
-	Indices []IndexPoint
-	AltName string
-	AltLink string
-	Entries map[string][]IndexItem
+	Indices    []IndexPoint
+	AltName    string
+	AltLink    string
+	Entries    map[string][]IndexItem
+	EntryOrder []string
+}
+
+type OrderedEntry struct {
+	Index   string
+	Entries []IndexItem
 }
 
 func (stc *Stc) LoadIndices() error {
@@ -43,6 +49,21 @@ func (stc *Stc) LoadIndices() error {
 	}
 
 	return nil
+}
+
+func (i *Index) OrderedEntries() []OrderedEntry {
+	oe := make([]OrderedEntry, len(i.EntryOrder))
+	for n, index := range i.EntryOrder {
+		oe[n].Index = index
+		oe[n].Entries = i.Entries[index]
+	}
+	return oe
+}
+
+func (i *Index) AddEntryOrder(index string) {
+	if len(i.EntryOrder) == 0 || i.EntryOrder[len(i.EntryOrder)-1:][0] != index {
+		i.EntryOrder = append(i.EntryOrder, index)
+	}
 }
 
 func (i *Index) addIndexPoint(name, link string) {
@@ -123,6 +144,7 @@ func (stc *Stc) LoadFeaturesByName() (*Index, error) {
 		index := IndexChar(f.Title)
 		i.addAlphaIndexPoint(index)
 
+		i.AddEntryOrder(index)
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   f.Name(),
 			Link:   fmt.Sprintf("/feature.html?f=%d", f.Id),
@@ -182,6 +204,7 @@ func (stc *Stc) LoadFeaturesByYear() (*Index, error) {
 		index := fmt.Sprintf("%d", (f.Year/10)*10)
 		i.addIndexPoint(index, index)
 
+		i.AddEntryOrder(index)
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   f.Name(),
 			Link:   fmt.Sprintf("/feature.html?f=%d", f.Id),
@@ -240,6 +263,7 @@ func (stc *Stc) LoadComputersByManufacturer() (*Index, error) {
 		index := c.Manufacturer
 		i.addAlphaIndexPoint(index)
 
+		i.AddEntryOrder(index)
 		i.Entries[index] = append(i.Entries[index], IndexItem{
 			Name:   c.Name(),
 			Link:   fmt.Sprintf("/computer.html?c=%d", c.Id),
