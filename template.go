@@ -313,8 +313,6 @@ a.button:hover {
       </a>
     </nav>
   </header>
-</body>
-</html>
 {{template "content" .}}
   <footer>
     <hr>
@@ -336,6 +334,7 @@ a.button:hover {
     </address>
   </footer>
 </body>
+</html>
 {{define "miniindex"}}
   {{if gt (len .) 1}}
     <p class='links'>
