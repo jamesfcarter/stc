@@ -13,7 +13,7 @@ import (
 type Markup string
 
 var (
-	MarkupRe = regexp.MustCompile("(FEAT|COMP|HELP)\\[[^\\]]*\\]")
+	MarkupRe = regexp.MustCompile("(FEAT|COMP|HELP)\\[\\d+,[^\\]]*\\]")
 )
 
 func replace(s string, fullUrl bool) string {
