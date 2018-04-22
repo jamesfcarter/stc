@@ -483,7 +483,13 @@ a.button:hover {
 {{define "content"}}
  <section class='computer'>
     <p class='image'>
-      <img alt='' src='/computers/{{.Computer.Image}}'>
+      {{if .Computer.ImageLink.Valid -}}
+        <a class='img' href='{{.Computer.ImageLink.String}}'>
+      {{- end}}
+	<img alt='' src='/computers/{{.Computer.Image}}'>
+      {{if .Computer.ImageLink.Valid -}}
+        </a>
+      {{- end}}
     </p>
     <h2>{{.Computer.Name}}</h2>
     <p>{{.Computer.Description.Format}}</p>

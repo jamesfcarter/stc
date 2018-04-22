@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,15 +16,16 @@ type Computer struct {
 	Description  Markup
 	Image        string
 	InfoLink     string
+	ImageLink    sql.NullString
 }
 
 func (stc *Stc) LoadComputer(id int) (*Computer, error) {
 	c := &Computer{}
 
 	err := stc.Db.QueryRow("SELECT "+
-		"manufacturer, model, description, image, info_link"+
+		"manufacturer, model, description, image, info_link, image_link"+
 		" FROM computer WHERE id=?", id).Scan(&c.Manufacturer,
-		&c.Model, &c.Description, &c.Image, &c.InfoLink)
+		&c.Model, &c.Description, &c.Image, &c.InfoLink, &c.ImageLink)
 	if err != nil {
 		return nil, err
 	}
