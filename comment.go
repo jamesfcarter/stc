@@ -91,7 +91,7 @@ func (cf *CommentForm) Post(a *Appearance) {
 		a.Feature.Id, a.Computer.Id,
 		cf.Name, cf.Comment, false, approvalCode)
 	if err != nil {
-		log.Printf("unable to store comment: %v")
+		log.Printf("unable to store comment: %v", err)
 		return
 	}
 
