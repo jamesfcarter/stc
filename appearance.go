@@ -130,11 +130,14 @@ func (stc *Stc) FeatureAppearances(f *Feature,
 	result := []Appearance{}
 
 	rows, err := stc.Db.Query("SELECT "+
-		"computer, description, "+
-		"importance_stars, importance, "+
-		"realism_stars, realism, "+
-		"visibility_stars, visibility "+
-		"FROM appearance WHERE feature=? AND visible=?",
+		"a.computer, a.description, "+
+		"a.importance_stars, a.importance, "+
+		"a.realism_stars, a.realism, "+
+		"a.visibility_stars, a.visibility "+
+		"FROM appearance AS a "+
+		"LEFT JOIN computer AS c ON a.computer = c.id "+
+		"WHERE feature=? AND visible=? "+
+		"ORDER BY c.manufacturer, c.model",
 		f.Id, !hidden)
 	if err != nil {
 		return nil, err
@@ -170,11 +173,15 @@ func (stc *Stc) ComputerAppearances(c *Computer,
 	result := []Appearance{}
 
 	rows, err := stc.Db.Query("SELECT "+
-		"feature, description, "+
-		"importance_stars, importance, "+
-		"realism_stars, realism, "+
-		"visibility_stars, visibility "+
-		"FROM appearance WHERE computer=? AND visible=?",
+		"a.feature, a.description, "+
+		"a.importance_stars, a.importance, "+
+		"a.realism_stars, a.realism, "+
+		"a.visibility_stars, a.visibility "+
+		"FROM appearance AS a "+
+		"LEFT JOIN feature AS f ON a.feature = f.id "+
+		"LEFT JOIN tv ON a.feature = tv.feature "+
+		"WHERE computer=? AND visible=? "+
+		"ORDER BY f.title, tv.season, tv.episode, tv.title",
 		c.Id, !hidden)
 	if err != nil {
 		return nil, err
