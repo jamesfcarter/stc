@@ -11,13 +11,16 @@ import (
 
 func ReadableTitle(title string) string {
 	for _, prefix := range []string{
-		"A", "The", "Der", "Le", "Les", "La", "Las", "El",
+		"A", "The", "Der", "Le", "Les", "La", "Las", "El", "L'",
 	} {
 		suffix := ", " + prefix
 		if !strings.HasSuffix(title, suffix) {
 			continue
 		}
-		title = prefix + " " + strings.TrimSuffix(title, suffix)
+		if !strings.HasSuffix(prefix, "'") {
+			prefix = prefix + " "
+		}
+		title = prefix + strings.TrimSuffix(title, suffix)
 	}
 	return title
 }
