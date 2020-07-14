@@ -600,6 +600,20 @@ a.button:hover {
         that you should check before
         <a href="mailto:james@starringthecomputer.com">mailing me</a>.
       </p>
+      <h3>Honourable mentions</h3>
+      <p>
+        The following films do not appear on the site because I believe
+	the computers they feature are mock ups and therefore do not
+	qualify. If you have concrete evidence that those machines are
+	real, or are made from identifiable parts of other machines then
+	do feel free to get in touch!
+      </p>
+      <dl>
+      	<dt>The Desk Set</dt>
+	<dd>Although it uses IBM tape drives, this machine is just a mock up.</dd>
+      	<dt>Sneakers</dt>
+	<dd>The Cray-like machine appears to be a mock up.</dd>
+      </dl>
       <h3>Most wanted</h3>
       <p>
           Can you identify any of the machines in these pictures? If so,
