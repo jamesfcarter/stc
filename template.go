@@ -297,6 +297,9 @@ a.button:hover {
       <a class='button' href='/stc.rss'>
         <img alt='[RSS]' src='/img/rss.png'>
       </a>
+      <a class='button' href='https://ko-fi.com/starringthecomputer'>
+        <img alt='[RSS]' src='/img/kofi.png'>
+      </a>
     </nav>
     <nav class='menu'>
       <a class='img' href='/news.html'>
