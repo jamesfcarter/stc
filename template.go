@@ -44,8 +44,8 @@ const (
 
 	// CSS ------------------------------------------------------------
 	stylesheetTemplate = `
-@import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
-@import url(http://fonts.googleapis.com/css?family=Special+Elite);
+@import url(https://fonts.googleapis.com/css?family=Droid+Sans:400,700);
+@import url(https://fonts.googleapis.com/css?family=Special+Elite);
 body {
   background: white;
   color: black;
@@ -273,7 +273,7 @@ a.button:hover {
 <head>
   <title>{{.PageTitle}}</title>
   {{ifIElt9}}
-      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   {{endif}}
   <meta content='Computers in movies and television shows' name='description'>
   <link href='/stylesheet.css' rel='STYLESHEET' type='text/css'>
@@ -288,7 +288,7 @@ a.button:hover {
       </a>
     </h1>
     <nav class='social'>
-      <a class='button' href='http://www.facebook.com/pages/Starring-the-Computer/25393451688'>
+      <a class='button' href='https://www.facebook.com/pages/Starring-the-Computer/25393451688'>
         <img alt='[Facebook]' src='/img/facebook.png'>
       </a>
       <a class='button' href='https://twitter.com/StarringTheComp'>
@@ -320,7 +320,7 @@ a.button:hover {
   <footer>
     <hr>
     <section class='footerbuttonbox'>
-      <a href='http://www.facebook.com/pages/Starring-the-Computer/25393451688'>
+      <a href='https://www.facebook.com/pages/Starring-the-Computer/25393451688'>
         <img alt='[Facebook]' src='/img/facebook.png'>
       </a>
       <a href='https://twitter.com/StarringTheComp'>
@@ -573,7 +573,7 @@ a.button:hover {
     have any tips about films not mentioned here that feature computers.
     </p>
     <p class='signature'>
-    <a href='http://www.jfc.org.uk'>James Carter</a>
+    <a href='https://www.jfc.org.uk'>James Carter</a>
     &lt;<a href='mailto:james@starringthecomputer.com'>james@starringthecomputer.com</a>&gt;
     </p>
     <hr>
