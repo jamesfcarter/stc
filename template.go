@@ -78,6 +78,16 @@ a.img:visited {
 a.img:hover {
   border-bottom: solid black; }
 
+a.skip-nav-link {
+  position: absolute;
+  padding: 6px;
+  background-color: black;
+  color: white;
+  transform: translateY(-200%); }
+
+a.skip-nav-link:focus {
+  transform:translateY(0); }
+
 h2 {
   font-family: "Special Elite", "courier", "mono", monospace;
   font-weight: bold;
@@ -281,6 +291,7 @@ a.button:hover {
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </head>
 <body>
+<a class='skip-nav-link' href='#content'>skip navigation</a>
 <header class='banner'>
     <h1>
       <a href='/'>
@@ -316,7 +327,9 @@ a.button:hover {
       </a>
     </nav>
   </header>
+  <section id='content'>
 {{template "content" .}}
+  </section>
   <footer>
     <hr>
     <section class='footerbuttonbox'>
