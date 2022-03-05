@@ -423,7 +423,7 @@ a.button:hover {
     <p>{{.Appearance.Description.Format}}</p>
     {{template "stars" .Appearance}}
     <section class='comments'>
-      <h3><img alt='Comments:' href='/img/comments.png'></h3>
+      <h3><img alt='Comments:' src='/img/comments.png'></h3>
       <article class='commentform'>
       {{if .Form.Created}}
         <p class='approval'>
