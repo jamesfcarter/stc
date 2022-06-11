@@ -309,7 +309,10 @@ a.button:hover {
         <img alt='[RSS]' src='/img/rss.png'>
       </a>
       <a class='button' href='https://ko-fi.com/starringthecomputer'>
-        <img alt='[RSS]' src='/img/kofi.png'>
+        <img alt='[Ko-fi]' src='/img/kofi.png'>
+      </a>
+      <a class='button' href='https://discord.gg/6NbTfHEtgQ'>
+        <img alt='[Discord]' src='/img/discord.png'>
       </a>
     </nav>
     <nav class='menu'>
