@@ -131,8 +131,8 @@ header.banner {
       margin-right: 14px; }
     header.banner nav.social {
       margin-top: -64px;
-      margin-left: 352px;
-      width: 150px; }
+      margin-left: 310px;
+      width: 200px; }
     header.banner nav.social img {
       margin-left: 0px;
       margin-right: 0px; }
@@ -313,6 +313,9 @@ a.button:hover {
       </a>
       <a class='button' href='https://discord.gg/6NbTfHEtgQ'>
         <img alt='[Discord]' src='/img/discord.png'>
+      </a>
+      <a class='button' rel='me' href='https://masthead.social/@starringthecomputer'>
+        <img alt='[Mastodon]' src='/img/mastodon.png'>
       </a>
     </nav>
     <nav class='menu'>
