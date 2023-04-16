@@ -314,7 +314,7 @@ a.button:hover {
       <a class='button' href='https://discord.gg/6NbTfHEtgQ'>
         <img alt='[Discord]' src='/img/discord.png'>
       </a>
-      <a class='button' rel='me' href='https://masthead.social/@starringthecomputer'>
+      <a class='button' rel='me' href='https://mas.to/@starringthecomputer'>
         <img alt='[Mastodon]' src='/img/mastodon.png'>
       </a>
     </nav>
