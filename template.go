@@ -131,8 +131,9 @@ header.banner {
       margin-right: 14px; }
     header.banner nav.social {
       margin-top: -64px;
-      margin-left: 310px;
-      width: 200px; }
+      margin-left: 300px;
+      width: 220px;
+      height: 30px; }
     header.banner nav.social img {
       margin-left: 0px;
       margin-right: 0px; }
@@ -308,14 +309,14 @@ a.button:hover {
       <a class='button' href='/stc.rss'>
         <img alt='[RSS]' src='/img/rss.png'>
       </a>
-      <a class='button' href='https://ko-fi.com/starringthecomputer'>
-        <img alt='[Ko-fi]' src='/img/kofi.png'>
-      </a>
       <a class='button' href='https://discord.gg/6NbTfHEtgQ'>
         <img alt='[Discord]' src='/img/discord.png'>
       </a>
       <a class='button' rel='me' href='https://mas.to/@starringthecomputer'>
         <img alt='[Mastodon]' src='/img/mastodon.png'>
+      </a>
+      <a class='button' href='https://liberapay.com/starringthecomputer/donate'>
+        <img alt='[Donate]' src='/img/liberapay.svg'>
       </a>
     </nav>
     <nav class='menu'>
