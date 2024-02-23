@@ -632,7 +632,7 @@ a.button:hover {
 	do feel free to get in touch!
       </p>
       <dl>
-      	<dt>The Desk Set</dt>
+      	<dt>Desk Set</dt>
 	<dd>Although it uses IBM tape drives, this machine is just a mock up.</dd>
       	<dt>Sneakers</dt>
 	<dd>The Cray-like machine appears to be a mock up.</dd>
