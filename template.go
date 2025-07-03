@@ -303,8 +303,8 @@ a.button:hover {
       <a class='button' href='https://www.facebook.com/pages/Starring-the-Computer/25393451688'>
         <img alt='[Facebook]' src='/img/facebook.png'>
       </a>
-      <a class='button' href='https://twitter.com/StarringTheComp'>
-        <img alt='[Twitter]' src='/img/twitter.png'>
+      <a class='button' href='https://bsky.app/profile/starringthecomputer.com'>
+        <img alt='[Bluesky]' src='/img/bluesky.png'>
       </a>
       <a class='button' href='/stc.rss'>
         <img alt='[RSS]' src='/img/rss.png'>
