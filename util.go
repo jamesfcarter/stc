@@ -37,7 +37,9 @@ func IndexChar(s string) string {
 	var first rune
 	for _, c := range s {
 		first = c
-		break
+		if unicode.IsLetter(c) || unicode.IsDigit(c) {
+			break
+		}
 	}
 	if unicode.IsDigit(first) {
 		return "0"
